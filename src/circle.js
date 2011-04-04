@@ -37,8 +37,16 @@ wamt.Circle.prototype.tick = function(scene,layer,view)
 {
 	if(scene.updated)
 	{
-		this.screenX = -view.x + this.x + (view.canvas.width / 2);
-		this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		if(layer.locked)
+		{
+			this.screenX = this.x;
+			this.screenY = this.y;
+		}
+		else
+		{
+			this.screenX = -view.x + this.x + (view.canvas.width / 2);
+			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		}
 	}
 };
 wamt.Circle.prototype.render = function(view)
@@ -115,16 +123,24 @@ wamt.Circle.prototype.setPosition = function(x,y)
 };
 wamt.Circle.prototype.translateX = function(x)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.translateY = function(y)
 {
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.translate = function(x,y)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -137,6 +153,8 @@ wamt.Circle.prototype.setRadius = function(radius)
 };
 wamt.Circle.prototype.stretch = function(radius)
 {
+	if(wamt.settings.smoothing)
+		radius *= wamt.delta * 0.1;
 	this.radius += radius;
 	if(this.radius < 1)
 		this.radius = 1;
@@ -152,6 +170,8 @@ wamt.Circle.prototype.setAngle = function(angle)
 };
 wamt.Circle.prototype.rotate = function(angle)
 {
+	if(wamt.settings.smoothing)
+		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;

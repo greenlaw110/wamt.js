@@ -42,8 +42,16 @@ wamt.Box.prototype.tick = function(scene,layer,view)
 {
 	if(scene.updated)
 	{
-		this.screenX = -view.x + this.x + (view.canvas.width / 2);
-		this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		if(layer.locked)
+		{
+			this.screenX = this.x;
+			this.screenY = this.y;
+		}
+		else
+		{
+			this.screenX = -view.x + this.x + (view.canvas.width / 2);
+			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		}
 	}
 };
 wamt.Box.prototype.render = function(view)
@@ -116,16 +124,24 @@ wamt.Box.prototype.setPosition = function(x,y)
 };
 wamt.Box.prototype.translateX = function(x)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Box.prototype.translateY = function(y)
 {
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Box.prototype.translate = function(x,y)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -151,6 +167,8 @@ wamt.Box.prototype.setSize = function(width,height)
 };
 wamt.Box.prototype.stretchX = function(width)
 {
+	if(wamt.settings.smoothing)
+		width *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -159,6 +177,8 @@ wamt.Box.prototype.stretchX = function(width)
 }
 wamt.Box.prototype.stretchY = function(height)
 {
+	if(wamt.settings.smoothing)
+		height *= wamt.delta * 0.1;
 	this.height += height;
 	if(this.height < 1)
 		this.height = 1;
@@ -167,6 +187,10 @@ wamt.Box.prototype.stretchY = function(height)
 }
 wamt.Box.prototype.stretch = function(width,height)
 {
+	if(wamt.settings.smoothing)
+		width *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		height *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -185,6 +209,8 @@ wamt.Box.prototype.setAngle = function(angle)
 };
 wamt.Box.prototype.rotate = function(angle)
 {
+	if(wamt.settings.smoothing)
+		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;

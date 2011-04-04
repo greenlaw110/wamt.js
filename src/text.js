@@ -59,8 +59,16 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 				this.height = 10;
 			this.updated = false;
 		}
-		this.screenX = -view.x + this.x + (view.canvas.width / 2);
-		this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		if(layer.locked)
+		{
+			this.screenX = this.x;
+			this.screenY = this.y;
+		}
+		else
+		{
+			this.screenX = -view.x + this.x + (view.canvas.width / 2);
+			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		}
 	}
 };
 wamt.Text.prototype.render = function(view)

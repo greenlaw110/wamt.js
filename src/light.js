@@ -23,8 +23,16 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 {
 	if(scene.updated)
 	{
-		this.screenX = -view.x + this.x + (view.canvas.width / 2);
-		this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		if(layer.locked)
+		{
+			this.screenX = this.x;
+			this.screenY = this.y;
+		}
+		else
+		{
+			this.screenX = -view.x + this.x + (view.canvas.width / 2);
+			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		}
 		for(var i=0;i<layer.objects.length;i++)
 		{
 			var object = layer.objects[i];
@@ -37,9 +45,9 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 				object.setShadow(0,0,0,"rgba(0,0,0,0");
 				continue;
 			}
-			var mult = 4 / this.intensity;
-			var offx = distx * mult;
-			var offy = disty * mult;
+			var mult = 0.3 / this.intensity;
+			var offx = distx * mult * object.bounds[0];
+			var offy = disty * mult * object.bounds[1];
 			object.setShadow(offx,offy,this.intensity * mult,"rgba(0,0,0,0.35)");
 		}
 	}
@@ -68,9 +76,12 @@ wamt.Light.prototype.setIntensity = function(intensity)
 };
 wamt.Light.prototype.intensify = function(intensity)
 {
+	if(wamt.settings.smoothing)
+		intensity *= wamt.delta * 0.1;
 	this.intensity += intensity;
 	if(this.intensity < 1)
 		this.intensity = 1;
+	this.computeBounds();
 	this.scene.updated = true;
 };
 wamt.Light.prototype.setX = function(x)
@@ -91,25 +102,25 @@ wamt.Light.prototype.setPosition = function(x,y)
 };
 wamt.Light.prototype.translateX = function(x)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Light.prototype.translateY = function(y)
 {
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Light.prototype.translate = function(x,y)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
-};
-wamt.Light.prototype.stretch = function(intensity)
-{
-	this.intensity += intensity;
-	if(this.intensity < 1)
-		this.intensity = 1;
-	this.computeBounds();
 	this.scene.updated = true;
 };

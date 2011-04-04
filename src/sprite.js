@@ -9,6 +9,12 @@ wamt.Sprite = function(image,x,y,angle)
 	this.image = image;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.tileWidth = 0;
+	this.tileHeight = 0;
+	this.tileAnimation = "";
+	this.tileAnimationFrame = 0;
+	this.tileAnimationSpeed = 0;
+	this.tileAnimations = [];
 	this.screenX = this.x;
 	this.screenY = this.y;
 	this.angle = typeof(angle) == "undefined" ? 0 : angle;
@@ -37,8 +43,16 @@ wamt.Sprite.prototype.tick = function(scene,layer,view)
 {
 	if(scene.updated)
 	{
-		this.screenX = -view.x + this.x + (view.canvas.width / 2);
-		this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		if(layer.locked)
+		{
+			this.screenX = this.x;
+			this.screenY = this.y;
+		}
+		else
+		{
+			this.screenX = -view.x + this.x + (view.canvas.width / 2);
+			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+		}
 	}
 };
 wamt.Sprite.prototype.render = function(view)
@@ -48,18 +62,45 @@ wamt.Sprite.prototype.render = function(view)
 	view.context.shadowOffsetY = this.shadow[1];
 	view.context.shadowBlur = this.shadow[2];
 	view.context.shadowColor = this.shadow[3];
-	if(radians == 0)
-		view.context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
+	var animation = this.tileAnimations[this.tileAnimation];
+	if(typeof(animation) == "undefined")
+	{
+		if(radians == 0)
+			view.context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
+		else
+		{
+			var transx = (this.width / 2) + this.screenX;
+			var transy = (this.height / 2) + this.screenY;
+			view.context.save();
+			view.context.translate(transx,transy);
+			view.context.rotate(radians);
+			view.context.translate(-transx,-transy);
+			view.context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
+			view.context.restore();
+		}
+	}
 	else
 	{
-		var transx = (this.width / 2) + this.screenX;
-		var transy = (this.height / 2) + this.screenY;
-		view.context.save();
-		view.context.translate(transx,transy);
-		view.context.rotate(radians);
-		view.context.translate(-transx,-transy);
-		view.context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
-		view.context.restore();
+		var fa = this.tileAnimationSpeed / wamt.delta;
+		this.tileAnimationFrame += fa;
+		if(this.tileAnimationFrame > animation[2] * animation[3] + 1)
+			this.tileAnimationFrame = 0;
+		var ff = Math.floor(this.tileAnimationFrame);
+		var tilex = Math.floor(ff % animation[2]);
+		var tiley = Math.floor(ff % animation[3]);
+		if(radians == 0)
+			view.context.drawImage(this.image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
+		else
+		{
+			var transx = (this.width / 2) + this.screenX;
+			var transy = (this.height / 2) + this.screenY;
+			view.context.save();
+			view.context.translate(transx,transy);
+			view.context.rotate(radians);
+			view.context.translate(-transx,-transy);
+			view.context.drawImage(this.image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
+			view.context.restore();
+		}
 	}
 	view.context.shadowOffsetX = "";
 	view.context.shadowOffsetY = "";
@@ -78,11 +119,56 @@ wamt.Sprite.prototype.setShadowCasting = function(shadowcast)
 };
 wamt.Sprite.prototype.setImage = function(image)
 {
+	this.clearTileAnimations();
 	this.image = image;
 	this.width = image.width;
 	this.height = image.height;
 	this.computeBounds();
 	this.scene.updated = true;
+};
+wamt.Sprite.prototype.setTiling = function(width,height)
+{
+	this.width = width;
+	this.height = height;
+	this.tileWidth = width;
+	this.tileHeight = height;
+	this.scene.updated = true;
+};
+wamt.Sprite.prototype.clearTileAnimations = function()
+{
+	this.tileAnimation = "";
+	this.tileAnimationFrame = 0;
+	this.tileAnimationSpeed = 0;
+	this.tileAnimations = [];
+};
+wamt.Sprite.prototype.addTileAnimation = function(name,x,y,framesx,framesy)
+{
+	this.tileAnimations[name] = [x,y,framesx,framesy];
+};
+wamt.Sprite.prototype.playTileAnimation = function(name,speed)
+{
+	var animation = this.tileAnimations[name];
+	if(typeof(animation) == "undefined")
+		return;
+	speed = typeof(speed) == "number" ? speed : 1;
+	if(animation[0] == animation[2] && animation[1] == animation[3])
+		speed = 0;
+	if(name != this.tileAnimation)
+		this.tileAnimationFrame = 0;
+	this.tileAnimation = name;
+	this.tileAnimationSpeed = speed;
+	this.scene.updated = true;
+};
+wamt.Sprite.prototype.setTileAnimationSpeed = function(speed)
+{
+	if(animation[0] == animation[2] && animation[1] == animation[3])
+		speed = 0;
+	this.tileAnimationSpeed = speed;
+	this.scene.updated = 1;
+};
+wamt.Sprite.prototype.pauseTileAnimation = function()
+{
+	this.tileAnimationSpeed = 0;
 };
 wamt.Sprite.prototype.setX = function(x)
 {
@@ -102,16 +188,24 @@ wamt.Sprite.prototype.setPosition = function(x,y)
 };
 wamt.Sprite.prototype.translateX = function(x)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.translateY = function(y)
 {
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.translate = function(x,y)
 {
+	if(wamt.settings.smoothing)
+		x *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -137,6 +231,8 @@ wamt.Sprite.prototype.setSize = function(width,height)
 };
 wamt.Sprite.prototype.stretchX = function(width)
 {
+	if(wamt.settings.smoothing)
+		width *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -145,6 +241,8 @@ wamt.Sprite.prototype.stretchX = function(width)
 }
 wamt.Sprite.prototype.stretchY = function(height)
 {
+	if(wamt.settings.smoothing)
+		height *= wamt.delta * 0.1;
 	this.height += height;
 	if(this.height < 1)
 		this.height = 1;
@@ -153,6 +251,10 @@ wamt.Sprite.prototype.stretchY = function(height)
 }
 wamt.Sprite.prototype.stretch = function(width,height)
 {
+	if(wamt.settings.smoothing)
+		width *= wamt.delta * 0.1;
+	if(wamt.settings.smoothing)
+		height *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -171,6 +273,8 @@ wamt.Sprite.prototype.setAngle = function(angle)
 };
 wamt.Sprite.prototype.rotate = function(angle)
 {
+	if(wamt.settings.smoothing)
+		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;
