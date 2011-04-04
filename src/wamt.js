@@ -30,19 +30,6 @@ window.requestAnimationFrame =
 		};
     }
 )();
-wamt.collisionPointTest = function(scene,view,x,y)
-{
-	var collisions = [];
-	for(var i=0;i<scene.objects.length;i++)
-	{
-		var object = scene.objects[i];
-		if(!object.collideable)
-			continue;
-		if((x >= object.screenX - (object.bounds[0] * 2) && x <= object.screenX + (object.bounds[0] * 2)) && (y >= object.screenY - (object.bounds[1] * 2) && y <= object.screenY + (object.bounds[1] * 2)))
-			collisions.push(object);
-	}
-	return collisions;
-};
 wamt.render = function(scene,view)
 {
 	var now = new Date();
