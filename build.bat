@@ -1,0 +1,2 @@
+buildnmin.py
+pause
