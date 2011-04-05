@@ -4,15 +4,47 @@
 	@package wamt.js
 */
 var wamt = {};
-wamt.support = {};
-wamt.support.canvas = typeof(window.CanvasRenderingContext2D) != "undefined";
-wamt.support.ajax = typeof(window.XMLHttpRequest) != "undefined";
-wamt.support.socket = typeof(window.WebSocket) != "undefined";
-wamt.support.local = typeof(localStorage) != "undefined";
-wamt.support.light = typeof(window.CanvasRenderingContext2D.prototype.createRadialGradient) != "undefined" && typeof(window.CanvasRenderingContext2D.prototype.setShadow) != "undefined";
-wamt.settings = {};
-wamt.settings.culling = true;
-wamt.settings.smoothing = true;
+wamt.support = 
+{
+	canvas: typeof(window.CanvasRenderingContext2D) != "undefined",
+	ajax: typeof(window.XMLHttpRequest) != "undefined",
+	socket: typeof(window.WebSocket) != "undefined",
+	local: typeof(localStorage) != "undefined",
+	light: typeof(window.CanvasRenderingContext2D.prototype.createRadialGradient) != "undefined" && typeof(window.CanvasRenderingContext2D.prototype.setShadow) != "undefined"
+};
+wamt.settings = 
+{
+	culling: true,
+	smoothing: true
+};
+wamt.events = 
+{
+	types: [],
+	subscriptions: []
+};
+wamt.events.addEventType = function(type)
+{
+	wamt.events.subscriptions[type] = [];
+};
+wamt.events.processEventType = function(type,holder)
+{
+	var subs = wamt.events.subscriptions[type];
+	if(typeof(subs) != "undefined")
+	{
+		for(var i=0;i<subs.length;i++)
+		{
+			var sub = subs[i];
+			sub(holder);
+		}
+	}
+};
+wamt.events.addEventListener = function(type,bind)
+{
+	if(typeof(wamt.events.subscriptions[type]) != "undefined" && typeof(bind) == "function")
+		wamt.events.subscriptions[type].push(bind);
+};
+wamt.events.subscribe = wamt.events.addEventListener;
+wamt.events.bind = wamt.events.addEventListener;
 wamt.time = new Date();
 wamt.delta = 0;
 wamt.fps = 0;

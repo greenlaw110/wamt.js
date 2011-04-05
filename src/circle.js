@@ -8,6 +8,7 @@ wamt.Circle = function(style,radius,x,y,angle)
 	this.collideable = true;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.velocity = [0,0];
 	this.screenX = this.x;
 	this.screenY = this.y;
 	this.angle = typeof(angle) == "undefined" ? 0 : angle;
