@@ -19,13 +19,14 @@ wamt.settings =
 };
 wamt.events = 
 {
-	types: [],
 	subscriptions: []
 };
 wamt.events.addEventType = function(type)
 {
 	wamt.events.subscriptions[type] = [];
 };
+wamt.events.addEventType("tick");
+wamt.events.addEventType("draw");
 wamt.events.processEventType = function(type,holder)
 {
 	var subs = wamt.events.subscriptions[type];
