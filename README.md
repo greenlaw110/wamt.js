@@ -4,11 +4,11 @@ This is a 2D game engine for the new HTML5 canvas element. It's fairly early in 
 
 Examples
 --------
-[Point collision](http://zack0wack0.com/wamt.js/examples/pointcollision.html)
-[Shadow casting](http://zack0wack0.com/wamt.js/examples/shadowcasting.html)
-[Constant velocity](http://zack0wack0.com/wamt.js/examples/velocity.html)
+[Point collision](http://zack0wack0.com/wamt.js/examples/pointcollision.html)  
+[Shadow casting](http://zack0wack0.com/wamt.js/examples/shadowcasting.html)  
+[Constant velocity](http://zack0wack0.com/wamt.js/examples/velocity.html)  
 
 Contributors
 --------
-<http://clockler.com>
-<http://www.zack0wack0.com>
+<http://clockler.com>  
+<http://www.zack0wack0.com>  
