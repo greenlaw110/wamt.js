@@ -9,6 +9,7 @@ wamt.Sprite = function(image,x,y,angle)
 	this.image = image;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.velocity = [0,0];
 	this.tileWidth = 0;
 	this.tileHeight = 0;
 	this.tileAnimation = "";
@@ -41,6 +42,8 @@ wamt.Sprite.prototype.setColliding = function(colliding)
 };
 wamt.Sprite.prototype.tick = function(scene,layer,view)
 {
+	if(this.velocity[0] != 0 || this.velocity[1] != 0)
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -208,6 +211,16 @@ wamt.Sprite.prototype.translate = function(x,y)
 		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
+	this.scene.updated = true;
+};
+wamt.Sprite.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
+	this.scene.updated = true;
+};
+wamt.Sprite.prototype.stop = function()
+{
+	this.velocity = [0,0];
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.setWidth = function(width)

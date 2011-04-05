@@ -8,6 +8,7 @@ wamt.Light = function(color,intensity,x,y)
 	this.collideable = false;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.velocity = [0,0];
 	this.screenX = this.x;
 	this.screenY = this.y;
 	this.intensity = intensity;
@@ -21,6 +22,8 @@ wamt.Light.prototype.computeBounds = function()
 };
 wamt.Light.prototype.tick = function(scene,layer,view)
 {
+	if(this.velocity[0] != 0 || this.velocity[1] != 0)
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -122,5 +125,10 @@ wamt.Light.prototype.translate = function(x,y)
 		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
+	this.scene.updated = true;
+};
+wamt.Light.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
 	this.scene.updated = true;
 };

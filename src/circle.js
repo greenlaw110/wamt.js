@@ -35,6 +35,8 @@ wamt.Circle.prototype.setHollow = function(hollow)
 };
 wamt.Circle.prototype.tick = function(scene,layer,view)
 {
+	if(this.velocity[0] != 0 || this.velocity[1] != 0)
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -143,6 +145,11 @@ wamt.Circle.prototype.translate = function(x,y)
 		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
+	this.scene.updated = true;
+};
+wamt.Circle.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.setRadius = function(radius)

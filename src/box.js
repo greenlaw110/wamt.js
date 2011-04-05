@@ -8,6 +8,7 @@ wamt.Box = function(style,width,height,x,y,angle)
 	this.collideable = true;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.velocity = [0,0];
 	this.screenX = this.x;
 	this.screenY = this.y;
 	this.angle = typeof(angle) == "undefined" ? 0 : angle;
@@ -40,6 +41,8 @@ wamt.Box.prototype.setHollow = function(hollow)
 };
 wamt.Box.prototype.tick = function(scene,layer,view)
 {
+	if(this.velocity[0] != 0 || this.velocity[1] != 0)
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -144,6 +147,16 @@ wamt.Box.prototype.translate = function(x,y)
 		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
+	this.scene.updated = true;
+};
+wamt.Box.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
+	this.scene.updated = true;
+};
+wamt.Box.prototype.stop = function()
+{
+	this.velocity = [0,0];
 	this.scene.updated = true;
 };
 wamt.Box.prototype.setWidth = function(width)

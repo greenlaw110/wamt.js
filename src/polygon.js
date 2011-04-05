@@ -8,6 +8,7 @@ wamt.Polygon = function(style,vertices,x,y,angle)
 	this.collideable = true;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
+	this.velocity = [0,0];
 	this.screenX = this.x;
 	this.screenY = this.y;
 	this.angle = typeof(angle) == "undefined" ? 0 : angle;
@@ -54,6 +55,8 @@ wamt.Polygon.prototype.setHollow = function(hollow)
 };
 wamt.Polygon.prototype.tick = function(scene,layer,view)
 {
+	if(this.velocity[0] != 0 || this.velocity[1] != 0)
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -170,6 +173,16 @@ wamt.Polygon.prototype.translate = function(x,y)
 		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
+	this.scene.updated = true;
+};
+wamt.Polygon.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
+	this.scene.updated = true;
+};
+wamt.Polygon.prototype.stop = function()
+{
+	this.velocity = [0,0];
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.setVertices = function(vertices)
