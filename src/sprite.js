@@ -5,6 +5,7 @@
 */
 wamt.Sprite = function(image,x,y,angle)
 {
+	this.events = [];
 	this.collideable = true;
 	this.image = image;
 	this.x = typeof(x) == "undefined" ? 0 : x;
@@ -57,6 +58,7 @@ wamt.Sprite.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Sprite.prototype.render = function(view)
 {
@@ -85,10 +87,13 @@ wamt.Sprite.prototype.render = function(view)
 	else
 	{
 		var fa = this.tileAnimationSpeed / wamt.delta;
+		var of = Math.floor(this.tileAnimationFrame);
 		this.tileAnimationFrame += fa;
 		if(this.tileAnimationFrame > animation[2] * animation[3] + 1)
 			this.tileAnimationFrame = 0;
 		var ff = Math.floor(this.tileAnimationFrame);
+		if(ff != of)
+			this.processEvent("frame");
 		var tilex = Math.floor(ff % animation[2]);
 		var tiley = Math.floor(ff % animation[3]);
 		if(radians == 0)
@@ -109,6 +114,7 @@ wamt.Sprite.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
+	this.processEvent("render",{object: this,view: view});
 };
 wamt.Sprite.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
@@ -296,4 +302,22 @@ wamt.Sprite.prototype.rotate = function(angle)
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;
+};
+wamt.Sprite.prototype.addEventListener = function(type,bind)
+{
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
+};
+wamt.Sprite.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
+	}
 };

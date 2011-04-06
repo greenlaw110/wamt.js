@@ -5,6 +5,7 @@
 */
 wamt.Light = function(color,intensity,x,y)
 {
+	this.events = [];
 	this.collideable = false;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
@@ -54,6 +55,7 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 			object.setShadow(offx,offy,this.intensity * mult,"rgba(0,0,0,0.35)");
 		}
 	}
+	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Light.prototype.render = function(view)
 {
@@ -65,6 +67,7 @@ wamt.Light.prototype.render = function(view)
 	view.context.arc(this.screenX,this.screenY,this.intensity,0,Math.PI * 2,false);
 	view.context.fill();
 	view.context.fillStyle = "";
+	this.processEvent("render",{object: this,view: view});
 };
 wamt.Light.prototype.setColor = function(red,green,blue,alpha)
 {
@@ -131,4 +134,22 @@ wamt.Light.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
 	this.scene.updated = true;
+};
+wamt.Light.prototype.addEventListener = function(type,bind)
+{
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
+};
+wamt.Light.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
+	}
 };

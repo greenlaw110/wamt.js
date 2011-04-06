@@ -5,6 +5,7 @@
 */
 wamt.Polygon = function(style,vertices,x,y,angle)
 {
+	this.events = [];
 	this.collideable = true;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
@@ -70,6 +71,7 @@ wamt.Polygon.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Polygon.prototype.render = function(view)
 {
@@ -119,6 +121,7 @@ wamt.Polygon.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
+	this.processEvent("render",{object: this,view: view});
 };
 wamt.Polygon.prototype.setStyle = function(style)
 {
@@ -249,4 +252,22 @@ wamt.Polygon.prototype.rotate = function(angle)
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;
+};
+wamt.Polygon.prototype.addEventListener = function(type,bind)
+{
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
+};
+wamt.Polygon.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
+	}
 };
