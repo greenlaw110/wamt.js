@@ -57,7 +57,7 @@ wamt.Polygon.prototype.setHollow = function(hollow)
 wamt.Polygon.prototype.tick = function(scene,layer,view)
 {
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0] * wamt.delta * 0.1,this.velocity[1] * wamt.delta * 0.1);
+		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
 	{
 		if(layer.locked)

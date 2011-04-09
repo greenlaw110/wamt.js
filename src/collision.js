@@ -35,3 +35,18 @@ wamt.collision.screenPointTest = function(target,x,y)
 	}
 	return collisions;
 };
+wamt.collision.layerObjectTest = function(a)
+{
+	var collisions = [];
+	for(var i=0;i<a.layer.objects.length;i++)
+	{
+		var b = a.layer.objects[i];
+		if(!b.collideable)
+			continue;
+		if(Math.abs(a.x - b.x) * 2 < a.bounds[0] + b.bounds[0] && Math.abs(a.y - b.y) * 2 < a.bounds[1] + b.bounds[1])
+			collisions.push(b);
+	}
+	return collisions;
+/*(abs(a.x - b.x) * 2 < (a.width + b.width)) &&
+         (abs(a.y - b.y) * 2 < (a.height + b.height))*/
+};
