@@ -41,12 +41,27 @@ wamt.collision.layerObjectTest = function(a)
 	for(var i=0;i<a.layer.objects.length;i++)
 	{
 		var b = a.layer.objects[i];
-		if(!b.collideable)
+		if(!b.collideable || b == a)
 			continue;
-		if(Math.abs(a.x - b.x) * 2 < a.bounds[0] + b.bounds[0] && Math.abs(a.y - b.y) * 2 < a.bounds[1] + b.bounds[1])
+		if(!(b.x > a.x + a.bounds[0] || b.x + b.bounds[0] < a.x || b.y > a.y + a.bounds[1] || b.y + b.bounds[1] < a.y))
 			collisions.push(b);
 	}
 	return collisions;
-/*(abs(a.x - b.x) * 2 < (a.width + b.width)) &&
-         (abs(a.y - b.y) * 2 < (a.height + b.height))*/
+};
+wamt.collision.sceneObjectTest = function(a)
+{
+	var collisions = [];
+	for(var l=0;l<a.scene.layers.length;l++)
+	{
+		var layer = a.scene.layers[l];
+		for(var i=0;i<layer.objects.length;i++)
+		{
+			var b = layer.objects[i];
+			if(!b.collideable || b == a)
+				continue;
+			if(!(b.x > a.x + a.bounds[0] || b.x + b.bounds[0] < a.x || b.y > a.y + a.bounds[1] || b.y + b.bounds[1] < a.y))
+				collisions.push(b);
+		}
+	}
+	return collisions;
 };
