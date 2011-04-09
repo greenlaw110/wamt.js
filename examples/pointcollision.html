@@ -124,25 +124,26 @@
 			function render()
 			{
 				archer.playTileAnimation("spin",0.3);
+				archer.setVelocity(0,0);
 				if(forward)
 				{
 					archer.playTileAnimation("back");
-					archer.translateY(-2);
+					archer.setVelocity(0,-5);
 				}
 				if(backward)
 				{
 					archer.playTileAnimation("front");
-					archer.translateY(2);
+					archer.setVelocity(0,5);
 				}
 				if(right)
 				{
 					archer.playTileAnimation("right");
-					archer.translateX(2);
+					archer.setVelocity(5,0);
 				}
 				if(left)
 				{
 					archer.playTileAnimation("left");
-					archer.translateX(-2);
+					archer.setVelocity(-5,0);
 				}
 				wamt.render(scene,view);
 				fpscounter.setText("FPS: " + wamt.fps);
