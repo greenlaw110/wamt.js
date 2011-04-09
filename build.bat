@@ -1,2 +1,2 @@
-buildnmin.py
-pause
+build.py
+pausesese
