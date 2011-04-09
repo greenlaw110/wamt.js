@@ -6,7 +6,7 @@
 wamt.Text = function(text,font,style,x,y,angle)
 {
 	this.events = [];
-	this.collideable = true;
+	this.collideable = false;
 	this.x = typeof(x) == "undefined" ? 0 : x;
 	this.y = typeof(y) == "undefined" ? 0 : y;
 	this.velocity = [0,0];
