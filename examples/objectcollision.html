@@ -46,6 +46,7 @@
 				guilayer.addObject(new wamt.Text("Object to object collision. There's two types, scene and layer. Scene searches the entire scene.","14px Arial","#aa0000",2,590));
 				document.addEventListener("keyup",keyup);
 				document.addEventListener("keydown",keydown);
+				wamt.play(scene);
 				render();
 			}
 			function keyup(event)
@@ -112,7 +113,7 @@
 					collidingt.setText("Colliding with an object");
 				else
 					collidingt.setText("Not colliding");
-				wamt.render(scene,view);
+				wamt.process(scene,view);
 				fpscounter.setText("FPS: " + wamt.fps);
 				requestAnimationFrame(render);
 			}

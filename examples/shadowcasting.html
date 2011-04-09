@@ -65,6 +65,7 @@
 				guilayer.addObject(new wamt.Text("Please note, this is experimental. Shadows are not properly skewed & scaled.","14px Arial","#aa0000",300,18));
 				document.addEventListener("keyup",keyup);
 				document.addEventListener("keydown",keydown);
+				wamt.play(scene);
 				render();
 			}
 			function keyup(event)
@@ -131,7 +132,7 @@
 					archer.playTileAnimation("left");
 					archer.setVelocity(-5,0);
 				}
-				wamt.render(scene,view);
+				wamt.process(scene,view);
 				fpscounter.setText("FPS: " + wamt.fps);
 				requestAnimationFrame(render);
 			}

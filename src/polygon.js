@@ -54,8 +54,10 @@ wamt.Polygon.prototype.setHollow = function(hollow)
 	this.hollow = hollow;
 	this.scene.updated = true;
 };
-wamt.Polygon.prototype.tick = function(scene,layer,view)
+wamt.Polygon.prototype.logic = function(scene)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
 		if(typeof(this.behaviour) != "undefined")
@@ -63,6 +65,12 @@ wamt.Polygon.prototype.tick = function(scene,layer,view)
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.logic(this);
+	this.processEvent("logic",{object:this,scene:scene});
+};
+wamt.Polygon.prototype.tick = function(scene,layer,view)
+{
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -76,7 +84,7 @@ wamt.Polygon.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
-	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
+	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Polygon.prototype.render = function(view)
 {
@@ -228,7 +236,7 @@ wamt.Polygon.prototype.stretch = function(x,y)
 }
 wamt.Polygon.prototype.setAngle = function(angle)
 {
-	this.angle = angle;
+	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;
@@ -236,10 +244,7 @@ wamt.Polygon.prototype.setAngle = function(angle)
 wamt.Polygon.prototype.rotate = function(angle)
 {
 	this.angle += angle;
-	if(this.angle > 360)
-		this.angle = this.angle - 360;
-	else if(this.angle < 0)
-		this.angle = 360 - this.angle;
+	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;
@@ -247,6 +252,7 @@ wamt.Polygon.prototype.rotate = function(angle)
 wamt.Polygon.prototype.setBehaviour = function(behaviour)
 {
 	this.behaviour = behaviour;
+	behaviour.init(this);
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.addEventListener = function(type,bind)

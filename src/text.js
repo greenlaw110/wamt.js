@@ -44,10 +44,10 @@ wamt.Text.prototype.setHollow = function(hollow)
 	this.hollow = hollow;
 	this.scene.updated = true;
 };
-wamt.Text.prototype.tick = function(scene,layer,view)
+wamt.Text.prototype.logic = function(scene,layer,view)
 {
 	if(typeof(this.behaviour) != "undefined")
-		this.behaviour.pretick(this);
+		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
 		if(typeof(this.behaviour) != "undefined")
@@ -55,6 +55,14 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.logic(this);
+	this.processEvent("logic",{object:this,scene:scene});
+};
+wamt.Text.prototype.tick = function(scene,layer,view)
+{
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(scene.updated)
 	{
 		if(this.updated)
@@ -83,7 +91,7 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 	}
 	if(typeof(this.behaviour) != "undefined")
 		this.behaviour.tick(this);
-	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
+	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Text.prototype.render = function(view)
 {
@@ -211,7 +219,7 @@ wamt.Text.prototype.stop = function()
 };
 wamt.Text.prototype.setAngle = function(angle)
 {
-	this.angle = angle;
+	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;
@@ -219,10 +227,7 @@ wamt.Text.prototype.setAngle = function(angle)
 wamt.Text.prototype.rotate = function(angle)
 {
 	this.angle += angle;
-	if(this.angle > 360)
-		this.angle = this.angle - 360;
-	else if(this.angle < 0)
-		this.angle = 360 - this.angle;
+	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
 	this.scene.updated = true;

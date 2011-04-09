@@ -50,6 +50,7 @@
 				view.addEventListener("mousemove",mousemove);
 				document.addEventListener("keyup",keyup);
 				document.addEventListener("keydown",keydown);
+				wamt.play(scene);
 				render();
 			}
 			function mousedown(event)
@@ -146,7 +147,7 @@
 					archer.playTileAnimation("left");
 					archer.setVelocity(-5,0);
 				}
-				wamt.render(scene,view);
+				wamt.process(scene,view);
 				fpscounter.setText("FPS: " + wamt.fps);
 				requestAnimationFrame(render);
 			}

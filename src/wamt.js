@@ -24,6 +24,10 @@ Math["radians"] = function(degrees)
 {
 	return degrees * Math.PI / 180;
 };
+Math["degrees"] = function(radians)
+{
+	return radians * 180 / Math.PI;
+};
 window.requestAnimationFrame = 
 (
 	function()
@@ -34,7 +38,23 @@ window.requestAnimationFrame =
 		};
     }
 )();
-wamt.render = function(scene,view)
+wamt.play = function(scene)
+{
+	var ts = scene;
+	scene.worker = setInterval
+	(
+		function()
+		{
+			ts.logic();
+		},
+		16.6666667
+	);
+};
+wamt.pause = function(scene)
+{
+	clearInterval(scene.worker);
+}
+wamt.process = function(scene,view)
 {
 	var now = new Date();
 	wamt.delta = now - wamt.time;
@@ -48,8 +68,6 @@ wamt.render = function(scene,view)
 		{
 			view.x = view.target.x;
 			view.y = view.target.y;
-			view.angle = view.target.angle;
-			view.radians = view.target.radians;
 		}
 		var ix = view.canvas.width;
 		var iy = view.canvas.height;
@@ -71,7 +89,11 @@ wamt.render = function(scene,view)
 				if((ox >= -cx && ox <= cx) && (oy >= -cy && oy <= cy) || !wamt.settings.culling)
 					object.render(view);
 			}
+			layer.processEvent("tick",{scene:scene,view:view});
+			layer.processEvent("render",{scene:scene,view:view});
 		}
+		scene.processEvent("tick",{scene:scene,view:view});
+		scene.processEvent("render",{scene:scene,view:view});
 		scene.updated = false;
 		view.updated = false;
 	}
@@ -82,14 +104,16 @@ wamt.render = function(scene,view)
 			var layer = scene.layers[j];
 			for(var i=0;i<layer.objects.length;i++)
 			{
-				var object = layer.objects[i];
-				object.tick(scene,layer,view);
+				layer.objects[i].tick(scene,layer,view);
 			}
+			layer.processEvent("tick",{scene:scene,view:view});
 		}
+		scene.processEvent("tick",{scene:scene,view:view});
 	}
 };
 wamt.Layer = function(scene,index)
 {
+	this.events = [];
 	this.scene = scene;
 	this.index = index;
 	this.objects = [];
@@ -124,9 +148,29 @@ wamt.Layer.prototype.setLocked = function(locked)
 	this.locked = locked;
 	this.scene.updated = true;
 };
+wamt.Layer.prototype.addEventListener = function(type,bind)
+{
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
+};
+wamt.Layer.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
+	}
+};
 wamt.Scene = function()
 {
+	this.events = [];
 	this.updated = false;
+	this.time = new Date();
 	this.layers = [];
 };
 wamt.Scene.prototype.constructor = wamt.Scene;
@@ -175,12 +219,45 @@ wamt.Scene.prototype.removeObject = function(obj)
 {
 	this.getLayer(obj.layer.index).removeObject(obj);
 };
-wamt.Scene.prototype.clearLayers = function()
+wamt.Scene.prototype.clear = function()
 {
 	this.layers = [];
+	this.updated = true;
+};
+wamt.Scene.prototype.logic = function()
+{
+	for(var j=0;j<this.layers.length;j++)
+	{
+		var layer = this.layers[j];
+		for(var i=0;i<layer.objects.length;i++)
+		{
+			var object = layer.objects[i];
+			object.logic(this);
+		}
+	}
+	this.processEvent("logic",{scene:this});
+};
+wamt.Scene.prototype.addEventListener = function(type,bind)
+{
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
+};
+wamt.Scene.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
+	}
 };
 wamt.View = function(canvas,x,y)
 {
+	this.events = [];
 	this.canvas = canvas;
 	this.context = canvas.getContext("2d");
 	this.x = typeof(x) == "undefined" ? canvas.width / 2 : x;
@@ -189,6 +266,10 @@ wamt.View = function(canvas,x,y)
 wamt.View.prototype.constructor = wamt.View;
 wamt.View.prototype.addEventListener = function(type,bind)
 {
+	var e = this.events[type];
+	if(typeof(e) == "undefined")
+		this.events[type] = [];
+	this.events[type].push(bind);
 	switch(type)
 	{
 		case "mousemove":
@@ -223,6 +304,17 @@ wamt.View.prototype.addEventListener = function(type,bind)
 				bind(event);
 			});
 			break;
+	}
+};
+wamt.View.prototype.processEvent = function(type,holder)
+{
+	var e = this.events[type];
+	if(typeof(e) != "undefined")
+	{
+		for(var i=0;i<e.length;i++)
+		{
+			e[i](holder);
+		}
 	}
 };
 wamt.View.prototype.setBackdrop = function(value)

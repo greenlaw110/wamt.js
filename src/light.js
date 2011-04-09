@@ -21,10 +21,10 @@ wamt.Light.prototype.computeBounds = function()
 {
 	this.bounds = [this.intensity * 2,this.intensity * 2];
 };
-wamt.Light.prototype.tick = function(scene,layer,view)
+wamt.Light.prototype.logic = function(scene,layer,view)
 {
 	if(typeof(this.behaviour) != "undefined")
-		this.behaviour.pretick(this);
+		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
 		if(typeof(this.behaviour) != "undefined")
@@ -32,6 +32,14 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.logic(this);
+	this.processEvent("logic",{object:this,scene:scene});
+};
+wamt.Light.prototype.tick = function(scene,layer,view)
+{
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -64,7 +72,7 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 	}
 	if(typeof(this.behaviour) != "undefined")
 		this.behaviour.tick(this);
-	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
+	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Light.prototype.render = function(view)
 {
@@ -145,6 +153,7 @@ wamt.Light.prototype.setVelocity = function(x,y)
 wamt.Light.prototype.setBehaviour = function(behaviour)
 {
 	this.behaviour = behaviour;
+	behaviour.init(this);
 	this.scene.updated = true;
 };
 wamt.Light.prototype.addEventListener = function(type,bind)
