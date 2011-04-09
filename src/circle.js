@@ -40,7 +40,12 @@ wamt.Circle.prototype.tick = function(scene,layer,view)
 	if(typeof(this.behaviour) != "undefined")
 		this.behaviour.pretick(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0],this.velocity[1]);
+	{
+		if(typeof(this.behaviour) != "undefined")
+			this.behaviour.velocity(this);
+		else
+			this.translate(this.velocity[0],this.velocity[1]);
+	}
 	if(scene.updated)
 	{
 		if(layer.locked)
