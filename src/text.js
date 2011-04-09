@@ -171,7 +171,7 @@ wamt.Text.prototype.setPosition = function(x,y)
 };
 wamt.Text.prototype.snap = function(x,y)
 {
-	this.translate(this.x % x,this.y % y);
+	this.translate(-(this.x % x),-(this.y % y));
 };
 wamt.Text.prototype.setVelocity = function(x,y)
 {

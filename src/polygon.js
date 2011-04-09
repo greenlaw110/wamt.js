@@ -156,7 +156,7 @@ wamt.Polygon.prototype.setPosition = function(x,y)
 };
 wamt.Polygon.prototype.snap = function(x,y)
 {
-	this.translate(this.x % x,this.y % y);
+	this.translate(-(this.x % x),-(this.y % y));
 };
 wamt.Polygon.prototype.translateX = function(x)
 {

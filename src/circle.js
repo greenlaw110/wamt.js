@@ -137,7 +137,7 @@ wamt.Circle.prototype.setPosition = function(x,y)
 };
 wamt.Circle.prototype.snap = function(x,y)
 {
-	this.translate(this.x % x,this.y % y);
+	this.translate(-(this.x % x),-(this.y % y));
 };
 wamt.Circle.prototype.translateX = function(x)
 {

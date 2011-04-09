@@ -114,7 +114,7 @@ wamt.Light.prototype.setPosition = function(x,y)
 };
 wamt.Light.prototype.snap = function(x,y)
 {
-	this.translate(this.x % x,this.y % y);
+	this.translate(-(this.x % x),-(this.y % y));
 };
 wamt.Light.prototype.translateX = function(x)
 {

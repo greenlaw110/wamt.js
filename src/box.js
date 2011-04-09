@@ -138,7 +138,7 @@ wamt.Box.prototype.setPosition = function(x,y)
 };
 wamt.Box.prototype.snap = function(x,y)
 {
-	this.translate(this.x % x,this.y % y);
+	this.translate(-(this.x % x),-(this.y % y));
 };
 wamt.Box.prototype.translateX = function(x)
 {
