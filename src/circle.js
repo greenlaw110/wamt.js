@@ -215,3 +215,7 @@ wamt.Circle.prototype.processEvent = function(type,holder)
 		}
 	}
 };
+wamt.Circle.prototype.destroy = function()
+{
+	this.scene.removeObject(this);
+};

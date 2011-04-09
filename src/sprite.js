@@ -321,3 +321,7 @@ wamt.Sprite.prototype.processEvent = function(type,holder)
 		}
 	}
 };
+wamt.Sprite.prototype.destroy = function()
+{
+	this.scene.removeObject(this);
+};

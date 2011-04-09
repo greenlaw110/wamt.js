@@ -104,6 +104,11 @@ wamt.Layer.prototype.addObject = function(object)
 	object.layer = this;
 	this.objects.push(object);
 };
+wamt.Layer.prototype.removeObject = function(obj)
+{
+	this.objects.splice(this.objects.indexOf(obj),1);
+	this.scene.updated = true;
+};
 wamt.Layer.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
@@ -165,6 +170,10 @@ wamt.Scene.prototype.addObject = function(object,layer)
 	tlayer.addObject(object);
 	if(typeof(object.render) != "undefined")
 		this.updated = true;
+};
+wamt.Scene.prototype.removeObject = function(obj)
+{
+	this.getLayer(obj.layer.index).removeObject(obj);
 };
 wamt.Scene.prototype.clearLayers = function()
 {

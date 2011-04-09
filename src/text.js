@@ -245,3 +245,7 @@ wamt.Text.prototype.processEvent = function(type,holder)
 		}
 	}
 };
+wamt.Text.prototype.destroy = function()
+{
+	this.scene.removeObject(this);
+};

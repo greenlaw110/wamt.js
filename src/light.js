@@ -160,3 +160,7 @@ wamt.Light.prototype.processEvent = function(type,holder)
 		}
 	}
 };
+wamt.Light.prototype.destroy = function()
+{
+	this.scene.removeObject(this);
+};

@@ -262,3 +262,7 @@ wamt.Polygon.prototype.processEvent = function(type,holder)
 		}
 	}
 };
+wamt.Polygon.prototype.destroy = function()
+{
+	this.scene.removeObject(this);
+};
