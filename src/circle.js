@@ -37,8 +37,10 @@ wamt.Circle.prototype.setHollow = function(hollow)
 };
 wamt.Circle.prototype.tick = function(scene,layer,view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0],this.velocity[1]);
+		this.translate(this.velocity[0] * wamt.delta * 0.1,this.velocity[1] * wamt.delta * 0.1);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -52,10 +54,14 @@ wamt.Circle.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.tick(this);
 	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Circle.prototype.render = function(view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.prerender(this);
 	var radians = this.radians;
 	view.context.fillStyle = this.style;
 	view.context.strokeStyle = this.style;
@@ -94,6 +100,8 @@ wamt.Circle.prototype.render = function(view)
 	view.context.shadowColor = "";
 	view.context.fillStyle = "";
 	view.context.strokeStyle = "";
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
 wamt.Circle.prototype.setStyle = function(style)
@@ -129,24 +137,16 @@ wamt.Circle.prototype.setPosition = function(x,y)
 };
 wamt.Circle.prototype.translateX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.translateY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.translate = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -164,8 +164,6 @@ wamt.Circle.prototype.setRadius = function(radius)
 };
 wamt.Circle.prototype.stretch = function(radius)
 {
-	if(wamt.settings.smoothing)
-		radius *= wamt.delta * 0.1;
 	this.radius += radius;
 	if(this.radius < 1)
 		this.radius = 1;
@@ -181,8 +179,6 @@ wamt.Circle.prototype.setAngle = function(angle)
 };
 wamt.Circle.prototype.rotate = function(angle)
 {
-	if(wamt.settings.smoothing)
-		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;
@@ -190,6 +186,11 @@ wamt.Circle.prototype.rotate = function(angle)
 		this.angle = 360 - this.angle;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
+	this.scene.updated = true;
+};
+wamt.Circle.prototype.setBehaviour = function(behaviour)
+{
+	this.behaviour = behaviour;
 	this.scene.updated = true;
 };
 wamt.Circle.prototype.addEventListener = function(type,bind)

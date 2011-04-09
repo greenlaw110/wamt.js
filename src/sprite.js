@@ -43,8 +43,10 @@ wamt.Sprite.prototype.setColliding = function(colliding)
 };
 wamt.Sprite.prototype.tick = function(scene,layer,view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0],this.velocity[1]);
+		this.translate(this.velocity[0] * wamt.delta * 0.1,this.velocity[1] * wamt.delta * 0.1);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -58,10 +60,14 @@ wamt.Sprite.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.tick(this);
 	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Sprite.prototype.render = function(view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.prerender(this);
 	var radians = this.radians;
 	view.context.shadowOffsetX = this.shadow[0];
 	view.context.shadowOffsetY = this.shadow[1];
@@ -114,7 +120,9 @@ wamt.Sprite.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
-	this.processEvent("render",{object: this,view: view});
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.render(this);
+	this.processEvent("render",{object:this,view:view});
 };
 wamt.Sprite.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
@@ -139,6 +147,7 @@ wamt.Sprite.prototype.setTiling = function(width,height)
 {
 	this.width = width;
 	this.height = height;
+	this.computeBounds();
 	this.tileWidth = width;
 	this.tileHeight = height;
 	this.scene.updated = true;
@@ -197,24 +206,16 @@ wamt.Sprite.prototype.setPosition = function(x,y)
 };
 wamt.Sprite.prototype.translateX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.translateY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.translate = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -250,8 +251,6 @@ wamt.Sprite.prototype.setSize = function(width,height)
 };
 wamt.Sprite.prototype.stretchX = function(width)
 {
-	if(wamt.settings.smoothing)
-		width *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -260,8 +259,6 @@ wamt.Sprite.prototype.stretchX = function(width)
 }
 wamt.Sprite.prototype.stretchY = function(height)
 {
-	if(wamt.settings.smoothing)
-		height *= wamt.delta * 0.1;
 	this.height += height;
 	if(this.height < 1)
 		this.height = 1;
@@ -270,10 +267,6 @@ wamt.Sprite.prototype.stretchY = function(height)
 }
 wamt.Sprite.prototype.stretch = function(width,height)
 {
-	if(wamt.settings.smoothing)
-		width *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		height *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -292,8 +285,6 @@ wamt.Sprite.prototype.setAngle = function(angle)
 };
 wamt.Sprite.prototype.rotate = function(angle)
 {
-	if(wamt.settings.smoothing)
-		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;
@@ -301,6 +292,11 @@ wamt.Sprite.prototype.rotate = function(angle)
 		this.angle = 360 - this.angle;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
+	this.scene.updated = true;
+};
+wamt.Sprite.prototype.setBehaviour = function(behaviour)
+{
+	this.behaviour = behaviour;
 	this.scene.updated = true;
 };
 wamt.Sprite.prototype.addEventListener = function(type,bind)

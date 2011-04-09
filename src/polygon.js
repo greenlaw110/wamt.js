@@ -57,7 +57,7 @@ wamt.Polygon.prototype.setHollow = function(hollow)
 wamt.Polygon.prototype.tick = function(scene,layer,view)
 {
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0],this.velocity[1]);
+		this.translate(this.velocity[0] * wamt.delta * 0.1,this.velocity[1] * wamt.delta * 0.1);
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -156,24 +156,16 @@ wamt.Polygon.prototype.setPosition = function(x,y)
 };
 wamt.Polygon.prototype.translateX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.translateY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.translate = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -196,8 +188,6 @@ wamt.Polygon.prototype.setVertices = function(vertices)
 };
 wamt.Polygon.prototype.stretchX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	for(var i=0;i<this.vertices.length;i++)
 	{
 		vertice = this.vertices[i];
@@ -208,8 +198,6 @@ wamt.Polygon.prototype.stretchX = function(x)
 }
 wamt.Polygon.prototype.stretchY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	for(var i=0;i<this.vertices.length;i++)
 	{
 		vertice = this.vertices[i];
@@ -220,10 +208,6 @@ wamt.Polygon.prototype.stretchY = function(y)
 }
 wamt.Polygon.prototype.stretch = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	for(var i=0;i<this.vertices.length;i++)
 	{
 		vertice = this.vertices[i];
@@ -242,8 +226,6 @@ wamt.Polygon.prototype.setAngle = function(angle)
 };
 wamt.Polygon.prototype.rotate = function(angle)
 {
-	if(wamt.settings.smoothing)
-		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;
@@ -251,6 +233,11 @@ wamt.Polygon.prototype.rotate = function(angle)
 		this.angle = 360 - this.angle;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
+	this.scene.updated = true;
+};
+wamt.Polygon.prototype.setBehaviour = function(behaviour)
+{
+	this.behaviour = behaviour;
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.addEventListener = function(type,bind)

@@ -46,6 +46,8 @@ wamt.Text.prototype.setHollow = function(hollow)
 };
 wamt.Text.prototype.tick = function(scene,layer,view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 		this.translate(this.velocity[0],this.velocity[1]);
 	if(scene.updated)
@@ -74,10 +76,14 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.tick(this);
 	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Text.prototype.render = function(view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.prerender(this);
 	var radians = this.radians;
 	view.context.strokeStyle = this.style;
 	view.context.fillStyle = this.style;
@@ -115,6 +121,8 @@ wamt.Text.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
 wamt.Text.prototype.setStyle = function(style)
@@ -208,6 +216,11 @@ wamt.Text.prototype.rotate = function(angle)
 		this.angle = 360 - this.angle;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
+	this.scene.updated = true;
+};
+wamt.Text.prototype.setBehaviour = function(behaviour)
+{
+	this.behaviour = behaviour;
 	this.scene.updated = true;
 };
 wamt.Text.prototype.addEventListener = function(type,bind)

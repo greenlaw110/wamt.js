@@ -42,8 +42,10 @@ wamt.Box.prototype.setHollow = function(hollow)
 };
 wamt.Box.prototype.tick = function(scene,layer,view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.pretick(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
-		this.translate(this.velocity[0],this.velocity[1]);
+		this.translate(this.velocity[0] * wamt.delta * 0.1,this.velocity[1] * wamt.delta * 0.1;
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -57,10 +59,14 @@ wamt.Box.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.tick(this);
 	this.processEvent("tick",{object: this, scene: scene, layer: layer, view: view});
 };
 wamt.Box.prototype.render = function(view)
 {
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.prerender(this);
 	var radians = this.radians;
 	view.context.strokeStyle = this.style;
 	view.context.fillStyle = this.style;
@@ -95,6 +101,8 @@ wamt.Box.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
+	if(typeof(this.behaviour) != "undefined")
+		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
 wamt.Box.prototype.setStyle = function(style)
@@ -130,24 +138,16 @@ wamt.Box.prototype.setPosition = function(x,y)
 };
 wamt.Box.prototype.translateX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.scene.updated = true;
 };
 wamt.Box.prototype.translateY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.scene.updated = true;
 };
 wamt.Box.prototype.translate = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
@@ -183,8 +183,6 @@ wamt.Box.prototype.setSize = function(width,height)
 };
 wamt.Box.prototype.stretchX = function(width)
 {
-	if(wamt.settings.smoothing)
-		width *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -193,8 +191,6 @@ wamt.Box.prototype.stretchX = function(width)
 }
 wamt.Box.prototype.stretchY = function(height)
 {
-	if(wamt.settings.smoothing)
-		height *= wamt.delta * 0.1;
 	this.height += height;
 	if(this.height < 1)
 		this.height = 1;
@@ -203,10 +199,6 @@ wamt.Box.prototype.stretchY = function(height)
 }
 wamt.Box.prototype.stretch = function(width,height)
 {
-	if(wamt.settings.smoothing)
-		width *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		height *= wamt.delta * 0.1;
 	this.width += width;
 	if(this.width < 1)
 		this.width = 1;
@@ -225,8 +217,6 @@ wamt.Box.prototype.setAngle = function(angle)
 };
 wamt.Box.prototype.rotate = function(angle)
 {
-	if(wamt.settings.smoothing)
-		angle *= wamt.delta * 0.1;
 	this.angle += angle;
 	if(this.angle > 360)
 		this.angle = this.angle - 360;
@@ -234,6 +224,11 @@ wamt.Box.prototype.rotate = function(angle)
 		this.angle = 360 - this.angle;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
+	this.scene.updated = true;
+};
+wamt.Box.prototype.setBehaviour = function(behaviour)
+{
+	this.behaviour = behaviour;
 	this.scene.updated = true;
 };
 wamt.Box.prototype.addEventListener = function(type,bind)

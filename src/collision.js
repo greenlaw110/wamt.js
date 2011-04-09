@@ -1,3 +1,8 @@
+/*
+	@title collision.js
+	@author Zack0Wack0/zack0wack0.com
+	@package wamt.js
+*/
 wamt.collision = {};
 wamt.collision.screenPointTest = function(target,x,y)
 {

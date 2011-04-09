@@ -9,10 +9,10 @@ var wamt =
 	delta: 0,
 	fps: 0
 };
+wamt.behaviours = {};
 wamt.support = 
 {
 	canvas: typeof(window.CanvasRenderingContext2D) != "undefined",
-	local: typeof(localStorage) != "undefined",
 	light: typeof(window.CanvasRenderingContext2D.prototype.createRadialGradient) != "undefined" && typeof(window.CanvasRenderingContext2D.prototype.setShadow) != "undefined"
 };
 wamt.settings = 
@@ -264,24 +264,16 @@ wamt.View.prototype.setPosition = function(x,y)
 };
 wamt.View.prototype.translateX = function(x)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
 	this.x += x;
 	this.updated = true;
 };
 wamt.View.prototype.translateY = function(y)
 {
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.y += y;
 	this.updated = true;
 };
 wamt.View.prototype.translate = function(x,y)
 {
-	if(wamt.settings.smoothing)
-		x *= wamt.delta * 0.1;
-	if(wamt.settings.smoothing)
-		y *= wamt.delta * 0.1;
 	this.x += x;
 	this.y += y;
 	this.updated = true;
