@@ -154,6 +154,10 @@ wamt.Polygon.prototype.setPosition = function(x,y)
 	this.y = y;
 	this.scene.updated = true;
 };
+wamt.Polygon.prototype.snap = function(x,y)
+{
+	this.translate(this.x % x,this.y % y);
+};
 wamt.Polygon.prototype.translateX = function(x)
 {
 	this.x += x;

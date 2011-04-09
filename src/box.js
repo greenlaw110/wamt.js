@@ -136,6 +136,10 @@ wamt.Box.prototype.setPosition = function(x,y)
 	this.y = y;
 	this.scene.updated = true;
 };
+wamt.Box.prototype.snap = function(x,y)
+{
+	this.translate(this.x % x,this.y % y);
+};
 wamt.Box.prototype.translateX = function(x)
 {
 	this.x += x;
