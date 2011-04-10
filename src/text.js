@@ -16,7 +16,7 @@ wamt.Text = function(text,font,style,x,y,angle)
 	this.radians = typeof(angle) == "undefined" ? 0 : Math.radians(angle);
 	this.width = 1;
 	this.height = 10;
-	this.text = text;
+	this.text = String(text).split("\n");
 	this.font = font;
 	this.style = style;
 	this.align = "start";
@@ -116,9 +116,21 @@ wamt.Text.prototype.render = function(view)
 	if(radians == 0)
 	{
 		if(this.hollow)
-			view.context.strokeText(this.text,this.screenX,this.screenY);
+		{
+			for(var i=0;i<this.text.length;i++)
+			{
+				var text = this.text[i];
+				view.context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+			}
+		}
 		else
-			view.context.fillText(this.text,this.screenX,this.screenY);
+		{
+			for(var i=0;i<this.text.length;i++)
+			{
+				var text = this.text[i];
+				view.context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+			}
+		}
 	}
 	else
 	{
@@ -129,9 +141,21 @@ wamt.Text.prototype.render = function(view)
 		view.context.rotate(radians);
 		view.context.translate(-transx,-transy);
 		if(this.hollow)
-			view.context.strokeText(this.text,this.screenX,this.screenY);
+		{
+			for(var i=0;i<this.text.length;i++)
+			{
+				var text = this.text[i];
+				view.context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+			}
+		}
 		else
-			view.context.fillText(this.text,this.screenX,this.screenY);
+		{
+			for(var i=0;i<this.text.length;i++)
+			{
+				var text = this.text[i];
+				view.context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+			}
+		}
 		view.context.restore();
 	}
 	view.context.strokeStyle = "";
@@ -159,7 +183,7 @@ wamt.Text.prototype.setFont = function(font)
 };
 wamt.Text.prototype.setText = function(text)
 {
-	this.text = text;
+	this.text = String(text).split("\n");
 	this.updated = true;
 	this.scene.updated = true;
 };
