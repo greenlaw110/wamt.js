@@ -11,11 +11,11 @@ wamt.collision.screenPointTest = function(target,x,y)
 	{
 		for(var i=0;i<target.objects.length;i++)
 		{
-			var object = target.objects[i];
-			if(!object.collideable)
+			var b = target.objects[i];
+			if(!b.collideable)
 				continue;
-			if((x >= object.screenX - (object.bounds[0]) && x <= object.screenX + (object.bounds[0])) && (y >= object.screenY - (object.bounds[1]) && y <= object.screenY + (object.bounds[1])))
-				collisions.push(object);
+			if((x > b.screenX && x < b.screenX + (b.bounds[0])) && (y > b.screenY - (b.bounds[1]) && y < b.screenY))
+				collisions.push(b);
 		}
 	}
 	else
@@ -25,11 +25,11 @@ wamt.collision.screenPointTest = function(target,x,y)
 			var layer = target.layers[l];
 			for(var i=0;i<layer.objects.length;i++)
 			{
-				var object = layer.objects[i];
-				if(!object.collideable)
+				var b = layer.objects[i];
+				if(!b.collideable)
 					continue;
-				if((x >= object.screenX - (object.bounds[0]) && x <= object.screenX + (object.bounds[0])) && (y >= object.screenY - (object.bounds[1]) && y <= object.screenY + (object.bounds[1])))
-					collisions.push(object);
+				if((x >= b.screenX && x <= b.screenX + (b.bounds[0])) && (y >= b.screenY && y <= b.screenY + (b.bounds[1])))
+					collisions.push(b);
 			}
 		}
 	}

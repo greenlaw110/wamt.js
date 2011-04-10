@@ -76,6 +76,7 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 			}
 			else
 				this.height = 10;
+			this.computeBounds();
 			this.updated = false;
 		}
 		if(layer.locked)
