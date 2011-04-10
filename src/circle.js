@@ -19,6 +19,7 @@ wamt.Circle = function(style,radius,x,y,angle)
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.shadowcast = false;
 	this.hollow = false;
+	this.visible = true;
 	this.computeBounds();
 };
 wamt.Circle.prototype.constructor = wamt.Circle;
@@ -29,6 +30,11 @@ wamt.Circle.prototype.computeBounds = function()
 wamt.Circle.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
+};
+wamt.Circle.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
+	this.scene.updated = true;
 };
 wamt.Circle.prototype.setHollow = function(hollow)
 {

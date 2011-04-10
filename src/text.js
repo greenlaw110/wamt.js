@@ -22,6 +22,7 @@ wamt.Text = function(text,font,style,x,y,angle)
 	this.align = "start";
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.hollow = false;
+	this.visible = true;
 	this.updated = true;
 	this.computeBounds();
 };
@@ -38,6 +39,11 @@ wamt.Text.prototype.computeBounds = function()
 wamt.Text.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
+};
+wamt.Text.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
+	this.scene.updated = true;
 };
 wamt.Text.prototype.setHollow = function(hollow)
 {

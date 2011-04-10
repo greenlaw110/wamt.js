@@ -14,12 +14,18 @@ wamt.Light = function(color,intensity,x,y)
 	this.screenY = this.y;
 	this.intensity = intensity;
 	this.color = color;
+	this.visible = true;
 	this.computeBounds();
 };
 wamt.Light.prototype.constructor = wamt.Light;
 wamt.Light.prototype.computeBounds = function()
 {
 	this.bounds = [this.intensity * 2,this.intensity * 2];
+};
+wamt.Light.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
+	this.scene.updated = true;
 };
 wamt.Light.prototype.logic = function(scene,layer,view)
 {

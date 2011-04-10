@@ -18,6 +18,7 @@ wamt.Polygon = function(style,vertices,x,y,angle)
 	this.style = style;
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.shadowcast = false;
+	this.visible = true;
 	this.computeBounds();
 };
 wamt.Polygon.prototype.constructor = wamt.Polygon;
@@ -47,6 +48,11 @@ wamt.Polygon.prototype.computeBounds = function()
 wamt.Polygon.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
+	this.scene.updated = true;
+};
+wamt.Polygon.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.setHollow = function(hollow)

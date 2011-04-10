@@ -19,6 +19,7 @@ wamt.Box = function(style,width,height,x,y,angle)
 	this.style = style;
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.hollow = false;
+	this.visible = true;
 	this.computeBounds();
 };
 wamt.Box.prototype.constructor = wamt.Box;
@@ -34,6 +35,11 @@ wamt.Box.prototype.computeBounds = function()
 wamt.Box.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
+};
+wamt.Box.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
+	this.scene.updated = true;
 };
 wamt.Box.prototype.setHollow = function(hollow)
 {

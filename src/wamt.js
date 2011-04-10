@@ -86,7 +86,7 @@ wamt.process = function(scene,view)
 				var oy = object.screenY + object.bounds[1];
 				var cx = ix + (object.bounds[0] * 2);
 				var cy = iy + (object.bounds[1] * 2);
-				if((ox >= -cx && ox <= cx) && (oy >= -cy && oy <= cy) || !wamt.settings.culling)
+				if(((ox >= -cx && ox <= cx) && (oy >= -cy && oy <= cy) && object.visible) || !wamt.settings.culling)
 					object.render(view);
 			}
 			layer.processEvent("tick",{scene:scene,view:view});

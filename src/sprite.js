@@ -25,6 +25,7 @@ wamt.Sprite = function(image,x,y,angle)
 	this.height = image.height;
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.shadowcast = false;
+	this.visible = true;
 	this.computeBounds();
 };
 wamt.Sprite.prototype.constructor = wamt.Sprite;
@@ -40,6 +41,11 @@ wamt.Sprite.prototype.computeBounds = function()
 wamt.Sprite.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
+};
+wamt.Sprite.prototype.setVisible = function(visible)
+{
+	this.visible = visible;
+	this.scene.updated = true;
 };
 wamt.Sprite.prototype.logic = function(scene)
 {
