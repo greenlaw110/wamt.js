@@ -138,6 +138,11 @@ wamt.Layer.prototype.setOpacity = function(opacity)
 	this.opacity = opacity;
 	this.scene.updated = true;
 };
+wamt.Layer.prototype.clear = function()
+{
+	this.objects = [];
+	this.scene.updated = true;
+};
 wamt.Layer.prototype.setCompositeOperation = function(type)
 {
 	this.composite = type;

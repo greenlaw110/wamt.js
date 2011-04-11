@@ -109,8 +109,8 @@
 					archer.playTileAnimation("left");
 					archer.setVelocity(-5,0);
 				}
-				if(wamt.collision.layerObjectTest(archer).length)
-					collidingt.setText("Colliding with an object");
+				if(wamt.collision.intersectTest(archer.layer,archer).length)
+					collidingt.setText("Intersecting with an object");
 				else
 					collidingt.setText("Not colliding");
 				wamt.process(scene,view);
