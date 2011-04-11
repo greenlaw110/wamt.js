@@ -63,8 +63,8 @@
 				fpscounter = new wamt.Text("FPS: 0","16px Arial Black","#ffffff",2,18);
 				guilayer.addObject(fpscounter);
 				guilayer.addObject(new wamt.Text("Please note, this is experimental. Shadows are not properly skewed & scaled.","14px Arial","#aa0000",300,18));
-				document.addEventListener("keyup",keyup);
-				document.addEventListener("keydown",keydown);
+				document.addEventListener("keyup",keyup,false);
+				document.addEventListener("keydown",keydown,false);
 				wamt.play(scene);
 				render();
 			}

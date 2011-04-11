@@ -283,7 +283,7 @@ wamt.View.prototype.addEventListener = function(type,bind)
 				event.view = this;
 				event.context = this.view;
 				bind(event);
-			});
+			},false);
 			break;
 		case "mousedown":
 			this.canvas.addEventListener("mousedown",function(event)
@@ -291,7 +291,7 @@ wamt.View.prototype.addEventListener = function(type,bind)
 				event.view = this;
 				event.context = this.view;
 				bind(event);
-			});
+			},false);
 			break;
 		case "mouseup":
 			this.canvas.addEventListener("mouseup",function(event)
@@ -299,7 +299,7 @@ wamt.View.prototype.addEventListener = function(type,bind)
 				event.view = this;
 				event.context = this.view;
 				bind(event);
-			});
+			},false);
 			break;
 		case "click":
 			this.canvas.addEventListener("click",function(event)
@@ -307,7 +307,7 @@ wamt.View.prototype.addEventListener = function(type,bind)
 				event.view = this;
 				event.context = this.view;
 				bind(event);
-			});
+			},false);
 			break;
 	}
 };
