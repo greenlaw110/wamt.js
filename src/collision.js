@@ -14,8 +14,16 @@ wamt.collision.screenPointTest = function(target,x,y,n)
 			var b = target.objects[i];
 			if(!b.collideable || b == n)
 				continue;
-			if((x > b.screenX && x < b.screenX + (b.bounds[0])) && (y > b.screenY - (b.bounds[1]) && y < b.screenY))
-				collisions.push(b);
+			if(b instanceof wamt.Text)
+			{
+				if(b.screenX <= x && b.screenX + b.bounds[0] >= x && b.screenY >= y && b.screenY - b.bounds[1] <= y)
+					collisions.push(b);
+			}
+			else
+			{
+				if(b.screenX <= x && b.screenX + b.bounds[0] >= x && b.screenY <= y && b.screenY + b.bounds[1] >= y)
+					collisions.push(b);
+			}
 		}
 	}
 	else
@@ -28,7 +36,7 @@ wamt.collision.screenPointTest = function(target,x,y,n)
 				var b = layer.objects[i];
 				if(!b.collideable || b == n)
 					continue;
-				if((x >= b.screenX && x <= b.screenX + (b.bounds[0])) && (y >= b.screenY && y <= b.screenY + (b.bounds[1])))
+				if(b.screenX <= x && b.screenX + b.bounds[0] >= x && b.screenY <= y && b.screenY + b.bounds[1] >= y)
 					collisions.push(b);
 			}
 		}
@@ -76,8 +84,16 @@ wamt.collision.pointTest = function(target,x,y,n)
 			var b = target.objects[i];
 			if(!b.collideable || b == n)
 				continue;
-			if((x > b.x && x < b.x + (b.bounds[0])) && (y > b.y - (b.bounds[1]) && y < b.y))
-				collisions.push(b);
+			if(b instanceof wamt.Text)
+			{
+				if(b.x <= x && b.x + b.bounds[0] >= x && b.y >= y && b.y - b.bounds[1] <= y)
+					collisions.push(b);
+			}
+			else
+			{
+				if(b.x <= x && b.x + b.bounds[0] >= x && b.y <= y && b.y + b.bounds[1] >= y)
+					collisions.push(b);
+			}
 		}
 	}
 	else
@@ -90,8 +106,16 @@ wamt.collision.pointTest = function(target,x,y,n)
 				var b = layer.objects[i];
 				if(!b.collideable || b == n)
 					continue;
-				if((x > b.x && x < b.x + (b.bounds[0])) && (y > b.y - (b.bounds[1]) && y < b.y))
-					collisions.push(b);
+				if(b instanceof wamt.Text)
+				{
+					if(b.x <= x && b.x + b.bounds[0] >= x && b.y >= y && b.y - b.bounds[1] <= y)
+						collisions.push(b);
+				}
+				else
+				{
+					if(b.x <= x && b.x + b.bounds[0] >= x && b.y <= y && b.y + b.bounds[1] >= y)
+						collisions.push(b);
+				}
 			}
 		}
 	}
