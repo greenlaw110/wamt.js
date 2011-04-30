@@ -1,2 +1,0 @@
-prepare.py
-pause

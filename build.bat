@@ -1,2 +1,2 @@
 build.py
-pausesese
+pause
