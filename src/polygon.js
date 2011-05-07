@@ -19,6 +19,7 @@ wamt.Polygon = function(style,vertices,x,y,angle)
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.shadowcast = false;
 	this.visible = true;
+	this.opacity = 1;
 	this.computeBounds();
 };
 wamt.Polygon.prototype.constructor = wamt.Polygon;
@@ -62,21 +63,26 @@ wamt.Polygon.prototype.setHollow = function(hollow)
 };
 wamt.Polygon.prototype.logic = function(scene)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
-		if(typeof(this.behaviour) != "undefined")
+		if(hasBehaviour)
 			this.behaviour.velocity(this);
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.logic(this);
 	this.processEvent("logic",{object:this,scene:scene});
 };
 wamt.Polygon.prototype.tick = function(scene,layer,view)
 {
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
+		this.behaviour.pretick(this);
+	var canvas = view.canvas;
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -86,60 +92,69 @@ wamt.Polygon.prototype.tick = function(scene,layer,view)
 		}
 		else
 		{
-			this.screenX = -view.x + this.x + (view.canvas.width / 2);
-			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+			this.screenX = -view.x + this.x + (canvas.width / 2);
+			this.screenY = -view.y + this.y + (canvas.height / 2);
 		}
 	}
+	if(hasBehaviour)
+		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Polygon.prototype.render = function(view)
 {
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
+		this.behaviour.prerender(this);
 	var radians = this.radians;
-	view.context.fillStyle = this.style;
-	view.context.strokeStyle = this.style;
-	view.context.shadowOffsetX = this.shadow[0];
-	view.context.shadowOffsetY = this.shadow[1];
-	view.context.shadowBlur = this.shadow[2];
-	view.context.shadowColor = this.shadow[3];
+	var context = view.context;
+	context.fillStyle = this.style;
+	context.strokeStyle = this.style;
+	context.shadowOffsetX = this.shadow[0];
+	context.shadowOffsetY = this.shadow[1];
+	context.shadowBlur = this.shadow[2];
+	context.shadowColor = this.shadow[3];
+	var vertices = this.vertices;
 	if(radians == 0)
 	{
-		view.context.beginPath();
-		for(var i=0;i<this.vertices.length;i++)
+		context.beginPath();
+		for(var i=0;i<vertices.length;i++)
 		{
-			var vertice = this.vertices[i];
-			view.context.lineTo(this.screenX + vertice[0],this.screenY + vertice[1]);
+			var vertice = vertices[i];
+			context.lineTo(this.screenX + vertice[0],this.screenY + vertice[1]);
 		}
 		if(this.hollow)
-			view.context.stroke();
+			context.stroke();
 		else
-			view.context.fill();
+			context.fill();
 	}
 	else
 	{
 		var transx = (this.width / 2) + this.screenX;
 		var transy = (this.height / 2) + this.screenY;
-		view.context.save();
-		view.context.translate(transx,transy);
-		view.context.rotate(radians);
-		view.context.translate(-transx,-transy);
-		view.context.beginPath();
-		for(var i=0;i<this.vertices.length;i++)
+		context.save();
+		context.translate(transx,transy);
+		context.rotate(radians);
+		context.translate(-transx,-transy);
+		context.beginPath();
+		for(var i=0;i<vertices.length;i++)
 		{
-			var vertice = this.vertices[i];
-			view.context.lineTo(this.screenX + vertice[0],this.screenY + vertice[1]);
+			var vertice = vertices[i];
+			context.lineTo(this.screenX + vertice[0],this.screenY + vertice[1]);
 		}
 		if(this.hollow)
-			view.context.stroke();
+			context.stroke();
 		else
-			view.context.fill();
-		view.context.restore();
+			context.fill();
+		context.restore();
 	}
-	view.context.fillStyle = "";
-	view.context.strokeStyle = "";
-	view.context.shadowOffsetX = "";
-	view.context.shadowOffsetY = "";
-	view.context.shadowBlur = "";
-	view.context.shadowColor = "";
+	context.fillStyle = "";
+	context.strokeStyle = "";
+	context.shadowOffsetX = "";
+	context.shadowOffsetY = "";
+	context.shadowBlur = "";
+	context.shadowColor = "";
+	if(hasBehaviour)
+		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
 wamt.Polygon.prototype.setStyle = function(style)
@@ -155,6 +170,11 @@ wamt.Polygon.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Polygon.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
+	this.scene.updated = true;
+};
+wamt.Polygon.prototype.setOpacity = function(opacity)
+{
+	this.opacity = opacity;
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.setX = function(x)
@@ -211,9 +231,10 @@ wamt.Polygon.prototype.setVertices = function(vertices)
 };
 wamt.Polygon.prototype.stretchX = function(x)
 {
-	for(var i=0;i<this.vertices.length;i++)
+	var vertices = this.vertices;
+	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = this.vertices[i];
+		vertice = vertices[i];
 		vertice[0] += x;
 	}
 	this.computeBounds();
@@ -221,9 +242,10 @@ wamt.Polygon.prototype.stretchX = function(x)
 }
 wamt.Polygon.prototype.stretchY = function(y)
 {
-	for(var i=0;i<this.vertices.length;i++)
+	var vertices = this.vertices;
+	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = this.vertices[i];
+		vertice = vertices[i];
 		vertice[1] += y;
 	}
 	this.computeBounds();
@@ -231,9 +253,10 @@ wamt.Polygon.prototype.stretchY = function(y)
 }
 wamt.Polygon.prototype.stretch = function(x,y)
 {
-	for(var i=0;i<this.vertices.length;i++)
+	var vertices = this.vertices;
+	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = this.vertices[i];
+		vertice = vertices[i];
 		vertice[0] += x;
 		vertice[1] += y;
 	}
@@ -258,7 +281,8 @@ wamt.Polygon.prototype.rotate = function(angle)
 wamt.Polygon.prototype.setBehaviour = function(behaviour)
 {
 	this.behaviour = behaviour;
-	behaviour.init(this);
+	if(typeof(behaviour.init) != "undefined")
+		behaviour.init(this);
 	this.scene.updated = true;
 };
 wamt.Polygon.prototype.addEventListener = function(type,bind)
@@ -274,9 +298,7 @@ wamt.Polygon.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.Polygon.prototype.destroy = function()

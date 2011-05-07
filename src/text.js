@@ -23,6 +23,7 @@ wamt.Text = function(text,font,style,x,y,angle)
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.hollow = false;
 	this.visible = true;
+	this.opacity = 1;
 	this.updated = true;
 	this.computeBounds();
 };
@@ -52,22 +53,24 @@ wamt.Text.prototype.setHollow = function(hollow)
 };
 wamt.Text.prototype.logic = function(scene,layer,view)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
-		if(typeof(this.behaviour) != "undefined")
+		if(hasBehaviour)
 			this.behaviour.velocity(this);
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.logic(this);
 	this.processEvent("logic",{object:this,scene:scene});
 };
 wamt.Text.prototype.tick = function(scene,layer,view)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.pretick(this);
 	if(scene.updated)
 	{
@@ -96,23 +99,25 @@ wamt.Text.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Text.prototype.render = function(view)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.prerender(this);
 	var radians = this.radians;
-	view.context.strokeStyle = this.style;
-	view.context.fillStyle = this.style;
-	view.context.font = this.font;
-	view.context.textAlign = this.align;
-	view.context.shadowOffsetX = this.shadow[0];
-	view.context.shadowOffsetY = this.shadow[1];
-	view.context.shadowBlur = this.shadow[2];
-	view.context.shadowColor = this.shadow[3];
+	var context = view.context;
+	context.strokeStyle = this.style;
+	context.fillStyle = this.style;
+	context.font = this.font;
+	context.textAlign = this.align;
+	context.shadowOffsetX = this.shadow[0];
+	context.shadowOffsetY = this.shadow[1];
+	context.shadowBlur = this.shadow[2];
+	context.shadowColor = this.shadow[3];
 	if(radians == 0)
 	{
 		if(this.hollow)
@@ -120,7 +125,7 @@ wamt.Text.prototype.render = function(view)
 			for(var i=0;i<this.text.length;i++)
 			{
 				var text = this.text[i];
-				view.context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+				context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
 			}
 		}
 		else
@@ -128,7 +133,7 @@ wamt.Text.prototype.render = function(view)
 			for(var i=0;i<this.text.length;i++)
 			{
 				var text = this.text[i];
-				view.context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+				context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
 			}
 		}
 	}
@@ -136,16 +141,16 @@ wamt.Text.prototype.render = function(view)
 	{
 		var transx = (this.width / 2) + this.screenX;
 		var transy = (this.height / 2) + this.screenY;
-		view.context.save();
-		view.context.translate(transx,transy);
-		view.context.rotate(radians);
-		view.context.translate(-transx,-transy);
+		context.save();
+		context.translate(transx,transy);
+		context.rotate(radians);
+		context.translate(-transx,-transy);
 		if(this.hollow)
 		{
 			for(var i=0;i<this.text.length;i++)
 			{
 				var text = this.text[i];
-				view.context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+				context.strokeText(text,this.screenX,this.screenY + (i * this.height * 1.5));
 			}
 		}
 		else
@@ -153,19 +158,19 @@ wamt.Text.prototype.render = function(view)
 			for(var i=0;i<this.text.length;i++)
 			{
 				var text = this.text[i];
-				view.context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
+				context.fillText(text,this.screenX,this.screenY + (i * this.height * 1.5));
 			}
 		}
-		view.context.restore();
+		context.restore();
 	}
-	view.context.strokeStyle = "";
-	view.context.fillStyle = "";
-	view.context.font = "";
-	view.context.shadowOffsetX = "";
-	view.context.shadowOffsetY = "";
-	view.context.shadowBlur = "";
-	view.context.shadowColor = "";
-	if(typeof(this.behaviour) != "undefined")
+	context.strokeStyle = "";
+	context.fillStyle = "";
+	context.font = "";
+	context.shadowOffsetX = "";
+	context.shadowOffsetY = "";
+	context.shadowBlur = "";
+	context.shadowColor = "";
+	if(hasBehaviour)
 		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
@@ -179,6 +184,11 @@ wamt.Text.prototype.setFont = function(font)
 {
 	this.font = font;
 	this.updated = true;
+	this.scene.updated = true;
+};
+wamt.Text.prototype.setOpacity = function(opacity)
+{
+	this.opacity = opacity;
 	this.scene.updated = true;
 };
 wamt.Text.prototype.setText = function(text)
@@ -281,9 +291,7 @@ wamt.Text.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.Text.prototype.destroy = function()

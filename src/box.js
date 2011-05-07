@@ -20,6 +20,7 @@ wamt.Box = function(style,width,height,x,y,angle)
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.hollow = false;
 	this.visible = true;
+	this.opacity = 1;
 	this.computeBounds();
 };
 wamt.Box.prototype.constructor = wamt.Box;
@@ -48,23 +49,26 @@ wamt.Box.prototype.setHollow = function(hollow)
 };
 wamt.Box.prototype.logic = function(scene)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.prelogic(this);
 	if(this.velocity[0] != 0 || this.velocity[1] != 0)
 	{
-		if(typeof(this.behaviour) != "undefined")
+		if(hasBehaviour)
 			this.behaviour.velocity(this);
 		else
 			this.translate(this.velocity[0],this.velocity[1]);
 	}
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.logic(this);
 	this.processEvent("logic",{object:this,scene:scene});
 };
 wamt.Box.prototype.tick = function(scene,layer,view)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.pretick(this);
+	var canvas = view.canvas;
 	if(scene.updated)
 	{
 		if(layer.locked)
@@ -74,45 +78,47 @@ wamt.Box.prototype.tick = function(scene,layer,view)
 		}
 		else
 		{
-			this.screenX = -view.x + this.x + (view.canvas.width / 2);
-			this.screenY = -view.y + this.y + (view.canvas.height / 2);
+			this.screenX = -view.x + this.x + (canvas.width / 2);
+			this.screenY = -view.y + this.y + (canvas.height / 2);
 		}
 	}
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
 wamt.Box.prototype.render = function(view)
 {
-	if(typeof(this.behaviour) != "undefined")
+	var hasBehaviour = typeof(this.behaviour) != "undefined";
+	if(hasBehaviour)
 		this.behaviour.prerender(this);
 	var radians = this.radians;
-	view.context.strokeStyle = this.style;
-	view.context.fillStyle = this.style;
-	view.context.shadowOffsetX = this.shadow[0];
-	view.context.shadowOffsetY = this.shadow[1];
-	view.context.shadowBlur = this.shadow[2];
-	view.context.shadowColor = this.shadow[3];
+	var context = view.context;
+	context.strokeStyle = this.style;
+	context.fillStyle = this.style;
+	context.shadowOffsetX = this.shadow[0];
+	context.shadowOffsetY = this.shadow[1];
+	context.shadowBlur = this.shadow[2];
+	context.shadowColor = this.shadow[3];
 	if(radians == 0)
 	{
 		if(this.hollow)
-			view.context.strokeRect(this.screenX,this.screenY,this.width,this.height);
+			context.strokeRect(this.screenX,this.screenY,this.width,this.height);
 		else
-			view.context.fillRect(this.screenX,this.screenY,this.width,this.height);
+			context.fillRect(this.screenX,this.screenY,this.width,this.height);
 	}
 	else
 	{
 		var transx = (this.width / 2) + this.screenX;
 		var transy = (this.height / 2) + this.screenY;
-		view.context.save();
-		view.context.translate(transx,transy);
-		view.context.rotate(radians);
-		view.context.translate(-transx,-transy);
+		context.save();
+		context.translate(transx,transy);
+		context.rotate(radians);
+		context.translate(-transx,-transy);
 		if(this.hollow)
-			view.context.strokeRect(this.screenX,this.screenY,this.width,this.height);
+			context.strokeRect(this.screenX,this.screenY,this.width,this.height);
 		else
-			view.context.fillRect(this.screenX,this.screenY,this.width,this.height);
-		view.context.restore();
+			context.fillRect(this.screenX,this.screenY,this.width,this.height);
+		context.restore();
 	}
 	view.context.strokeStyle = "";
 	view.context.fillStyle = "";
@@ -120,9 +126,14 @@ wamt.Box.prototype.render = function(view)
 	view.context.shadowOffsetY = "";
 	view.context.shadowBlur = "";
 	view.context.shadowColor = "";
-	if(typeof(this.behaviour) != "undefined")
+	if(hasBehaviour)
 		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
+};
+wamt.Box.prototype.setOpacity = function(opacity)
+{
+	this.opacity = opacity;
+	this.scene.updated = true;
 };
 wamt.Box.prototype.setStyle = function(style)
 {
@@ -265,9 +276,7 @@ wamt.Box.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.Box.prototype.destroy = function()

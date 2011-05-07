@@ -9,9 +9,10 @@ wamt.collision.screenPointTest = function(target,x,y,n)
 	var collisions = [];
 	if(target instanceof wamt.Layer)
 	{
-		for(var i=0;i<target.objects.length;i++)
+		var objects = target.objects;
+		for(var i=0;i<objects.length;i++)
 		{
-			var b = target.objects[i];
+			var b = objects[i];
 			if(!b.collideable || b == n)
 				continue;
 			if(b instanceof wamt.Text)
@@ -28,12 +29,14 @@ wamt.collision.screenPointTest = function(target,x,y,n)
 	}
 	else
 	{
-		for(var l=0;l<target.layers.length;l++)
+		var layers = target.layers;
+		for(var l=0;l<layers.length;l++)
 		{
-			var layer = target.layers[l];
-			for(var i=0;i<layer.objects.length;i++)
+			var layer = layers[l];
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
 			{
-				var b = layer.objects[i];
+				var b = objects[i];
 				if(!b.collideable || b == n)
 					continue;
 				if(b.screenX <= x && b.screenX + b.bounds[0] >= x && b.screenY <= y && b.screenY + b.bounds[1] >= y)
@@ -48,9 +51,10 @@ wamt.collision.boxSearch = function(target,x,y,width,height,n)
 	var collisions = [];
 	if(target instanceof wamt.Layer)
 	{
-		for(var i=0;i<target.objects.length;i++)
+		var objects = target.objects;
+		for(var i=0;i<objects.length;i++)
 		{
-			var b = target.objects[i];
+			var b = objects[i];
 			if(!b.collideable || b == n)
 				continue;
 			if(!(b.x > x + width || b.x + b.bounds[0] < x || b.y > y + height || b.y + b.bounds[1] < y))
@@ -59,12 +63,14 @@ wamt.collision.boxSearch = function(target,x,y,width,height,n)
 	}
 	else
 	{
-		for(var l=0;l<target.layers.length;l++)
+		var layers = target.layers;
+		for(var l=0;l<layers.length;l++)
 		{
-			var layer = target.layers[l];
-			for(var i=0;i<layer.objects.length;i++)
+			var layer = layers[l];
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
 			{
-				var b = layer.objects[i];
+				var b = objects[i];
 				if(!b.collideable || b == n)
 					continue;
 				if(!(b.x > x + width || b.x + b.bounds[0] < x || b.y > y + height || b.y + b.bounds[1] < y))
@@ -79,9 +85,10 @@ wamt.collision.pointTest = function(target,x,y,n)
 	var collisions = [];
 	if(target instanceof wamt.Layer)
 	{
-		for(var i=0;i<target.objects.length;i++)
+		var objects = target.objects;
+		for(var i=0;i<objects.length;i++)
 		{
-			var b = target.objects[i];
+			var b = objects[i];
 			if(!b.collideable || b == n)
 				continue;
 			if(b instanceof wamt.Text)
@@ -98,12 +105,14 @@ wamt.collision.pointTest = function(target,x,y,n)
 	}
 	else
 	{
-		for(var l=0;l<target.layers.length;l++)
+		var layers = target.layers;
+		for(var l=0;l<layers.length;l++)
 		{
-			var layer = target.layers[l];
-			for(var i=0;i<layer.objects.length;i++)
+			var layer = layers[l];
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
 			{
-				var b = layer.objects[i];
+				var b = objects[i];
 				if(!b.collideable || b == n)
 					continue;
 				if(b instanceof wamt.Text)
@@ -126,9 +135,10 @@ wamt.collision.intersectTest = function(target,a)
 	var collisions = [];
 	if(target instanceof wamt.Layer)
 	{
-		for(var i=0;i<target.objects.length;i++)
+		var objects = target.objects;
+		for(var i=0;i<objects.length;i++)
 		{
-			var b = target.objects[i];
+			var b = objects[i];
 			if(!b.collideable || b == a)
 				continue;
 			if(!(b.x > a.x + a.bounds[0] || b.x + b.bounds[0] < a.x || b.y > a.y + a.bounds[1] || b.y + b.bounds[1] < a.y))
@@ -137,12 +147,14 @@ wamt.collision.intersectTest = function(target,a)
 	}
 	else
 	{
-		for(var l=0;l<target.layers.length;l++)
+		var layers = target.layers;
+		for(var l=0;l<layers.length;l++)
 		{
-			var layer = target.layers[l];
-			for(var i=0;i<layer.objects.length;i++)
+			var layer = layers[l];
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
 			{
-				var b = layer.objects[i];
+				var b = objects[i];
 				if(!b.collideable || b == a)
 					continue;
 				if(!(b.x > a.x + a.bounds[0] || b.x + b.bounds[0] < a.x || b.y > a.y + a.bounds[1] || b.y + b.bounds[1] < a.y))

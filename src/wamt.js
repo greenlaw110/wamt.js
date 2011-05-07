@@ -17,8 +17,7 @@ wamt.support =
 };
 wamt.settings = 
 {
-	culling: true,
-	smoothing: true
+	culling: true
 };
 Math["radians"] = function(degrees)
 {
@@ -47,7 +46,7 @@ wamt.play = function(scene)
 		{
 			ts.logic();
 		},
-		16.6666667
+		1000 / 60
 	);
 };
 wamt.pause = function(scene)
@@ -60,34 +59,51 @@ wamt.process = function(scene,view)
 	wamt.delta = now - wamt.time;
 	wamt.fps = Math.round(1000 / wamt.delta);
 	wamt.time = now;
+	var layers = scene.layers;
+	var canvas = view.canvas;
+	var context = view.context;
 	if(scene.updated || view.updated)
 	{
 		view.clearCanvas();
 		view.renderBackdrop();
-		if(typeof(view.target) != "undefined")
+		var target = view.target;
+		if(typeof(target) != "undefined")
 		{
-			view.x = view.target.x;
-			view.y = view.target.y;
+			view.x = target.x;
+			view.y = target.y;
 		}
-		var ix = view.canvas.width;
-		var iy = view.canvas.height;
-		for(var j=0;j<scene.layers.length;j++)
+		var ix = canvas.width;
+		var iy = canvas.height;
+		for(var j=0;j<layers.length;j++)
 		{
-			var layer = scene.layers[j];
-			view.context.globalCompositeOperation = layer.composite;
-			view.context.globalAlpha = layer.opacity;
-			for(var i=0;i<layer.objects.length;i++)
+			var layer = layers[j];
+			context.globalCompositeOperation = layer.composite;
+			var oldAlpha = layer.opacity;
+			context.globalAlpha = oldAlpha;
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
 			{
-				var object = layer.objects[i];
+				var object = objects[i];
 				object.tick(scene,layer,view);
 				if(typeof(object.render) == "undefined")
 					continue;
-				var ox = object.screenX + object.bounds[0];
-				var oy = object.screenY + object.bounds[1];
-				var cx = ix + (object.bounds[0] * 2);
-				var cy = iy + (object.bounds[1] * 2);
-				if(((ox >= -cx && ox <= cx) && (oy >= -cy && oy <= cy) && object.visible) || !wamt.settings.culling)
+				if(!object.visible)
+					continue;
+				var opacity = object.opacity;
+				if(opacity != 1)
+					context.globalAlpha = oldAlpha * opacity;
+				if(!wamt.settings.culling)
 					object.render(view);
+				else
+				{
+					var ox = object.screenX + object.bounds[0];
+					var oy = object.screenY + object.bounds[1];
+					var cx = ix + (object.bounds[0] * 2);
+					var cy = iy + (object.bounds[1] * 2);
+					if((ox >= -cx && ox <= cx) && (oy >= -cy && oy <= cy))
+						object.render(view);
+				}
+				context.globalAlpha = oldAlpha;
 			}
 			layer.processEvent("tick",{scene:scene,view:view});
 			layer.processEvent("render",{scene:scene,view:view});
@@ -99,13 +115,12 @@ wamt.process = function(scene,view)
 	}
 	else
 	{
-		for(var j=0;j<scene.layers.length;j++)
+		for(var j=0;j<layers.length;j++)
 		{
-			var layer = scene.layers[j];
-			for(var i=0;i<layer.objects.length;i++)
-			{
-				layer.objects[i].tick(scene,layer,view);
-			}
+			var layer = layers[j];
+			var objects = layer.objects;
+			for(var i=0;i<objects.length;i++)
+				objects[i].tick(scene,layer,view);
 			layer.processEvent("tick",{scene:scene,view:view});
 		}
 		scene.processEvent("tick",{scene:scene,view:view});
@@ -130,7 +145,8 @@ wamt.Layer.prototype.addObject = function(object)
 };
 wamt.Layer.prototype.removeObject = function(obj)
 {
-	this.objects.splice(this.objects.indexOf(obj),1);
+	var objects = this.objects;
+	objects.splice(objects.indexOf(obj),1);
 	this.scene.updated = true;
 };
 wamt.Layer.prototype.setOpacity = function(opacity)
@@ -166,9 +182,7 @@ wamt.Layer.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.Scene = function()
@@ -182,9 +196,10 @@ wamt.Scene.prototype.constructor = wamt.Scene;
 wamt.Scene.prototype.getLayer = function(index)
 {
 	var l;
-	for(var i=0;i<this.layers.length;i++)
+	var layers = this.layers;
+	for(var i=0;i<layers.length;i++)
 	{
-		var layer = this.layers[i];
+		var layer = layers[i];
 		if(layer.index == index)
 		{
 			l = layer;
@@ -196,8 +211,9 @@ wamt.Scene.prototype.getLayer = function(index)
 wamt.Scene.prototype.createLayer = function(index)
 {
 	var layer = new wamt.Layer(this,index);
-	this.layers.push(layer);
-	this.layers.sort(
+	var layers = this.layers;
+	layers.push(layer);
+	layers.sort(
 						function(a,b)
 						{
 							if(a.index < b.index)
@@ -231,12 +247,14 @@ wamt.Scene.prototype.clear = function()
 };
 wamt.Scene.prototype.logic = function()
 {
-	for(var j=0;j<this.layers.length;j++)
+	var layers = this.layers;
+	for(var j=0;j<layers.length;j++)
 	{
-		var layer = this.layers[j];
-		for(var i=0;i<layer.objects.length;i++)
+		var layer = layers[j];
+		var objects = layer.objects;
+		for(var i=0;i<objects.length;i++)
 		{
-			var object = layer.objects[i];
+			var object = objects[i];
 			object.logic(this);
 		}
 	}
@@ -255,9 +273,7 @@ wamt.Scene.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.View = function(canvas,x,y)
@@ -317,9 +333,7 @@ wamt.View.prototype.processEvent = function(type,holder)
 	if(typeof(e) != "undefined")
 	{
 		for(var i=0;i<e.length;i++)
-		{
 			e[i](holder);
-		}
 	}
 };
 wamt.View.prototype.setBackdrop = function(value)
@@ -330,13 +344,15 @@ wamt.View.prototype.renderBackdrop = function()
 {
 	if(typeof(this.backdrop) == "undefined")
 		return;
+	var canvas = this.canvas;
+	var context = this.context;
 	if(this.backdrop instanceof Image)
-		this.context.drawImage(this.backdrop,0,0,this.canvas.width,this.canvas.height);
+		this.context.drawImage(this.backdrop,0,0,canvas.width,canvas.height);
 	else
 	{
-		this.context.fillStyle = this.backdrop;
-		this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
-		this.context.fillStyle = "";
+		context.fillStyle = this.backdrop;
+		context.fillRect(0,0,canvas.width,canvas.height);
+		context.fillStyle = "";
 	}
 };
 wamt.View.prototype.setCanvas = function(canvas)
@@ -346,7 +362,8 @@ wamt.View.prototype.setCanvas = function(canvas)
 };
 wamt.View.prototype.clearCanvas = function()
 {
-	this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
+	var canvas = this.canvas;
+	this.context.clearRect(0,0,canvas.width,canvas.height);
 };
 wamt.View.prototype.setTarget = function(target)
 {
