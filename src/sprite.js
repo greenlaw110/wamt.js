@@ -167,8 +167,16 @@ wamt.Sprite.prototype.setImage = function(image)
 {
 	this.clearTileAnimations();
 	this.image = image;
-	this.width = image.width;
-	this.height = image.height;
+	if(typeof(image.videoWidth) != "undefined")
+	{
+		this.width = image.videoWidth;
+		this.height = image.videoHeight;
+	}
+	else
+	{
+		this.width = image.width;
+		this.height = image.height;
+	}
 	this.computeBounds();
 	this.scene.updated = true;
 };
