@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<video id="video" autoplay style="display:none"> 
+			<source src="http://dl.dropbox.com/u/551734/videos/bloominoctagon.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video> 
+		<script type="text/javascript" src="../src/wamt.js"></script>
+		<script type="text/javascript" src="../src/sprite.js"></script>
+		<script type="text/javascript" src="../src/collision.js"></script>
+		<script type="text/javascript" src="../src/text.js"></script>
+		<script type="text/javascript" src="../src/image.js"></script>
+		<script type="text/javascript">
+			var texture_archersheet = new Image();
+			texture_archersheet.src = "images/archer_tilesheet.png";
+			var scene,view,archer,canvas,forward,backward,left,right,video_element,video;
+			var guilayer,fpscounter;
+			var texture_stone = new Image();
+			texture_stone.src = "images/stone.png";
+			var video_element = document.getElementById("video");
+			function init()
+			{
+				canvas = document.getElementById("canvas");
+				scene = new wamt.Scene();
+				view = new wamt.View(canvas,0,0);
+				view.setBackdrop("#00ff00");
+				for(var x=0;x<32;x++)
+				{
+					for(var y=0;y<32;y++)
+					{
+						var stone = new wamt.Sprite(texture_stone,x * 16,y * 16);
+						stone.stonedrag = true;
+						scene.addObject(stone,0);
+					}
+				}
+				archer = new wamt.Sprite(texture_archersheet,5,5);
+				scene.addObject(archer,1);
+				archer.setTiling(24,24);
+				archer.addTileAnimation("right",0,0,1,1);
+				archer.addTileAnimation("front",1,0,1,1);
+				archer.addTileAnimation("left",2,0,1,1);
+				archer.addTileAnimation("back",3,0,1,1);
+				archer.addTileAnimation("spin",0,0,4,1);
+				archer.playTileAnimation("spin",1);
+				video = new wamt.Sprite(texture_stone,16,16);
+				scene.addObject(video,0);
+				video.setSize(480,270);
+				view.setTarget(archer);
+				guilayer = scene.createLayer(1);
+				guilayer.setLocked(true);
+				fpscounter = new wamt.Text("FPS: 0","16px Arial Black","#ffffff",2,18);
+				guilayer.addObject(fpscounter);
+				guilayer.addObject(new wamt.Text("You can display videos on sprites the same way as images, only use setImage(video).","14px Arial","#aa0000",2,590));
+				document.addEventListener("keyup",keyup,false);
+				document.addEventListener("keydown",keydown,false);
+				wamt.play(scene);
+				render();
+			}
+			function keyup(event)
+			{
+				switch(event.keyCode)
+				{
+					case 87:
+						forward = false;
+						break;
+					case 65:
+						left = false;
+						break;
+					case 83:
+						backward = false;
+						break;
+					case 68:
+						right = false;
+						break;
+				}
+			}
+			function keydown(event)
+			{
+				switch(event.keyCode)
+				{
+					case 87:
+						forward = true;
+						break;
+					case 65:
+						left = true;
+						break;
+					case 83:
+						backward = true;
+						break;
+					case 68:
+						right = true;
+						break;
+				}
+			}
+			function render()
+			{
+				archer.playTileAnimation("spin",0.3);
+				archer.setVelocity(0,0);
+				if(forward)
+				{
+					archer.playTileAnimation("back");
+					archer.setVelocity(0,-5);
+				}
+				if(backward)
+				{
+					archer.playTileAnimation("front");
+					archer.setVelocity(0,5);
+				}
+				if(right)
+				{
+					archer.playTileAnimation("right");
+					archer.setVelocity(5,0);
+				}
+				if(left)
+				{
+					archer.playTileAnimation("left");
+					archer.setVelocity(-5,0);
+				}
+				wamt.process(scene,view);
+				if(video_element.readyState === video_element.HAVE_ENOUGH_DATA)
+					video.setImage(video_element);
+				fpscounter.setText("FPS: " + wamt.fps);
+				requestAnimationFrame(render);
+			}
+		</script>
+	</head>
+	<body onload="init();">
+		<center>
+			<canvas id="canvas" width=800 height=600>
+			</canvas>
+		</center>
+	</body>
+</html>
