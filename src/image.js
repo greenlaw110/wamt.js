@@ -49,11 +49,117 @@ wamt.Image.prototype.setPixel = function(x,y,r,g,b,a)
 	data.data[i + 3] = a;
 	this.render();
 };
-wamt.Image.prototype.fillObject = function(obj)
+wamt.Image.prototype.drawObject = function(obj)
 {
 	obj.render({context:this.context});
-	this.update();
 	this.render();
+	this.update();
+};
+wamt.Image.prototype.fillRect = function(style,x,y,width,height)
+{
+	var context = this.context;
+	context.fillStyle = style;
+	context.fillRect(x,y,width,height);
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.strokeRect = function(style,x,y,width,height)
+{
+	var context = this.context;
+	context.strokeStyle = style;
+	context.strokeRect(x,y,width,height);
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.fillText = function(style,x,y,text)
+{
+	var context = this.context;
+	context.fillStyle = style;
+	context.fillText(text,x,y);
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.strokeText = function(style,x,y,text)
+{
+	var context = this.context;
+	context.strokeStyle = style;
+	context.strokeText(text,x,y);
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.fillCircle = function(style,x,y,radius)
+{
+	var context = this.context;
+	context.fillStyle = style;
+	context.beginPath();
+	context.arc(x,y,radius,0,Math.PI * 2,false);
+	context.fill();
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.strokeCircle = function(style,x,y,radius)
+{
+	var context = this.context;
+	context.strokeStyle = style;
+	context.beginPath();
+	context.arc(x,y,radius,0,Math.PI * 2,false);
+	context.stroke();
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.fillPolygon = function(style,x,y,vertices)
+{
+	var context = this.context;
+	context.fillStyle = style;
+	context.beginPath();
+	for(var i=0;i<vertices.length;i++)
+	{
+		var vertice = vertices[i];
+		context.lineTo(x + vertice[0],y + vertice[1]);
+	}
+	context.fill();
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.strokePolygon = function(style,x,y,vertices)
+{
+	var context = this.context;
+	context.strokeStyle = style;
+	context.beginPath();
+	for(var i=0;i<vertices.length;i++)
+	{
+		var vertice = vertices[i];
+		context.lineTo(x + vertice[0],y + vertice[1]);
+	}
+	context.stroke();
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.fillLine = function(style,x,y,ex,ey)
+{
+	var context = this.context;
+	context.fillStyle = style;
+	context.beginPath();
+	context.save();
+	context.translate(x,y);
+	context.lineTo(ex,ey);
+	context.fill();
+	context.restore();
+	this.render();
+	this.update();
+};
+wamt.Image.prototype.strokeLine = function(style,x,y,ex,ey)
+{
+	var context = this.context;
+	context.strokeStyle = style;
+	context.beginPath();
+	context.save();
+	context.translate(x,y);
+	context.lineTo(ex,ey);
+	context.stroke();
+	context.restore();
+	this.render();
+	this.update();
 };
 wamt.Image.prototype.getPixel = function(x,y)
 {

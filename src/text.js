@@ -197,6 +197,11 @@ wamt.Text.prototype.setText = function(text)
 	this.updated = true;
 	this.scene.updated = true;
 };
+wamt.Text.prototype.setTextAlign = function(align)
+{
+	this.align = align;
+	this.scene.updated = true;
+};
 wamt.Text.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
