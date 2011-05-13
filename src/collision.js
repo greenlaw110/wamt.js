@@ -1,9 +1,16 @@
 /*
-	@title collision.js
-	@author Zack0Wack0/zack0wack0.com
-	@package wamt.js
+	wamt.js/collision.js
+	@author Zack0Wack0/http://zack0wack0.com
 */
 wamt.collision = {};
+/*
+	@description Perform a point on screen collision test.
+	@param {Scene} target The scene to perform the collision tests on. Also accepts layers.
+	@param {Number} x The screen x-position.
+	@param {Number} y The screen y-position.
+	@param {Object} n Optional. An object to ignore tests on.
+	@returns {Array} A list of successful collisions.
+*/
 wamt.collision.screenPointTest = function(target,x,y,n)
 {
 	var collisions = [];
@@ -46,6 +53,16 @@ wamt.collision.screenPointTest = function(target,x,y,n)
 	}
 	return collisions;
 };
+/*
+	@description Perform a box search/test. Searches through the target and checks if any objects are inside the box.
+	@param {Scene} target The scene to perform the collision tests on. Also accepts layers.
+	@param {Number} x The x-position.
+	@param {Number} y The y-position.
+	@param {Number} width The width of the box.
+	@param {Number} height The height of the box.
+	@param {Object} n Optional. An object to ignore tests on.
+	@returns {Array} A list of successful collisions.
+*/
 wamt.collision.boxSearch = function(target,x,y,width,height,n)
 {
 	var collisions = [];
@@ -80,6 +97,14 @@ wamt.collision.boxSearch = function(target,x,y,width,height,n)
 	}
 	return collisions;
 };
+/*
+	@description Perform a point collision test.
+	@param {Scene} target The scene to perform the collision tests on. Also accepts layers.
+	@param {Number} x The x-position.
+	@param {Number} y The y-position.
+	@param {Object} n Optional. An object to ignore tests on.
+	@returns {Array} A list of successful collisions.
+*/
 wamt.collision.pointTest = function(target,x,y,n)
 {
 	var collisions = [];
@@ -130,6 +155,12 @@ wamt.collision.pointTest = function(target,x,y,n)
 	}
 	return collisions;
 };
+/*
+	@description Perform an intersect test. Checks if the object is intersecting with any other objects in the target.
+	@param {Scene} target The scene to perform the collision tests on. Also accepts layers.
+	@param {Object} a The object that you want to test intersections on.
+	@returns {Array} A list of successful collisions.
+*/
 wamt.collision.intersectTest = function(target,a)
 {
 	var collisions = [];

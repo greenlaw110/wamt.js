@@ -1,7 +1,14 @@
 /*
-	@title polygon.js
-	@author Zack0Wack0/zack0wack0.com
-	@package wamt.js
+	wamt.js/polygon.js
+	@author Zack0Wack0/http://zack0wack0.com
+*/
+/*
+	@class The Polygon is a renderable object that renders an array of vertices.
+	@param {String} style The colour style.
+	@param {Array} vertices An array of 2-tuple vertices.
+	@param {Number} x The x-position of the object.
+	@param {Number} y The y-position of the object.
+	@param {Number} angle The angle of the object.
 */
 wamt.Polygon = function(style,vertices,x,y,angle)
 {
@@ -23,6 +30,10 @@ wamt.Polygon = function(style,vertices,x,y,angle)
 	this.computeBounds();
 };
 wamt.Polygon.prototype.constructor = wamt.Polygon;
+/*
+	@function
+	@description Compute the bounds of the object, by rotating the vertices based on angle.
+*/
 wamt.Polygon.prototype.computeBounds = function()
 {
 	var minx = 0;
@@ -46,21 +57,41 @@ wamt.Polygon.prototype.computeBounds = function()
 	else
 		this.bounds = [maxx - minx,maxy - miny];
 };
+/*
+	@function
+	@description Set whether the object is colliding.
+	@param {Bool} colliding Is the object colliding?
+*/
 wamt.Polygon.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set whether the object is visible.
+	@param {Bool} visible Is the object visible?
+*/
 wamt.Polygon.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set whether the object is hollow.
+	@param {Bool} hollow Is the object hollow?
+*/
 wamt.Polygon.prototype.setHollow = function(hollow)
 {
 	this.hollow = hollow;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Process the object's logic. (handles velocity, behaviours, etc)
+	@param {Scene} scene The parent scene processing logic.
+*/
 wamt.Polygon.prototype.logic = function(scene)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -77,6 +108,13 @@ wamt.Polygon.prototype.logic = function(scene)
 		this.behaviour.logic(this);
 	this.processEvent("logic",{object:this,scene:scene});
 };
+/*
+	@function
+	@description Process the object's screen position and other misc. stuff (behaviours)
+	@param {Scene} scene The parent scene.
+	@param {Layer} layer The parent layer.
+	@param {View} view The parent view.
+*/
 wamt.Polygon.prototype.tick = function(scene,layer,view)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -100,6 +138,11 @@ wamt.Polygon.prototype.tick = function(scene,layer,view)
 		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
+/*
+	@function
+	@description Render the object to the screen.
+	@param {View} view The view to render the object into.
+*/
 wamt.Polygon.prototype.render = function(view)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -157,78 +200,22 @@ wamt.Polygon.prototype.render = function(view)
 		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
-wamt.Polygon.prototype.setStyle = function(style)
-{
-	this.style = style;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setShadow = function(offsetx,offsety,blur,color)
-{
-	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setShadowCasting = function(shadowcast)
-{
-	this.shadowcast = shadowcast;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setOpacity = function(opacity)
-{
-	this.opacity = opacity;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setX = function(x)
-{
-	this.x = x;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setY = function(y)
-{
-	this.y = y;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setPosition = function(x,y)
-{
-	this.x = x;
-	this.y = y;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.snap = function(x,y)
-{
-	this.translate(-(this.x % x),-(this.y % y));
-};
-wamt.Polygon.prototype.translateX = function(x)
-{
-	this.x += x;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.translateY = function(y)
-{
-	this.y += y;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.translate = function(x,y)
-{
-	this.x += x;
-	this.y += y;
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.setVelocity = function(x,y)
-{
-	this.velocity = [x,y];
-	this.scene.updated = true;
-};
-wamt.Polygon.prototype.stop = function()
-{
-	this.velocity = [0,0];
-	this.scene.updated = true;
-};
+/*
+	@function
+	@description Set the object's vertex array.
+	@param {Array} vertices The array of 2-tuple vertices.
+*/
 wamt.Polygon.prototype.setVertices = function(vertices)
 {
 	this.vertices = vertices;
 	this.computeBounds();
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Stretch the object on the x-axis.
+	@param {Number} x The amount to stretch on the x-axis.
+*/
 wamt.Polygon.prototype.stretchX = function(x)
 {
 	var vertices = this.vertices;
@@ -239,7 +226,12 @@ wamt.Polygon.prototype.stretchX = function(x)
 	}
 	this.computeBounds();
 	this.scene.updated = true;
-}
+};
+/*
+	@function
+	@description Stretch the object on the y-axis.
+	@param {Number} y The amount to stretch on the y-axis.
+*/
 wamt.Polygon.prototype.stretchY = function(y)
 {
 	var vertices = this.vertices;
@@ -250,7 +242,13 @@ wamt.Polygon.prototype.stretchY = function(y)
 	}
 	this.computeBounds();
 	this.scene.updated = true;
-}
+};
+/*
+	@function
+	@description Stretch the object on the axi.
+	@param {Number} x The amount to stretch on the x-axis.
+	@param {Number} y The amount to stretch on the y-axis.
+*/
 wamt.Polygon.prototype.stretch = function(x,y)
 {
 	var vertices = this.vertices;
@@ -262,7 +260,149 @@ wamt.Polygon.prototype.stretch = function(x,y)
 	}
 	this.computeBounds();
 	this.scene.updated = true;
-}
+};
+/*
+	@function
+	@description Set the colour style of the object.
+	@param {String} style The colour style.
+*/
+wamt.Polygon.prototype.setStyle = function(style)
+{
+	this.style = style;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the shadow of the object.
+	@param {Number} offsetx The x-offset of the shadow.
+	@param {Number} offsety The y-offset of the shadow.
+	@param {Number} blur The blur radius of the shadow.
+	@param {String} color The colour of the shadow.
+*/
+wamt.Polygon.prototype.setShadow = function(offsetx,offsety,blur,color)
+{
+	this.shadow = [offsetx,offsety,blur,color];
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set whether the object is shadowcasting.
+	@param {Bool} shadowcast Is the object shadowcasting?
+*/
+wamt.Polygon.prototype.setShadowCasting = function(shadowcast)
+{
+	this.shadowcast = shadowcast;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the opacity of the object.
+	@param {Number} opacity The new opacity of the object.
+*/
+wamt.Polygon.prototype.setOpacity = function(opacity)
+{
+	this.opacity = opacity;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the x-position of the object.
+	@param {Number} x The x-position.
+*/
+wamt.Polygon.prototype.setX = function(x)
+{
+	this.x = x;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the y-position of the object.
+	@param {Number} y The y-position.
+*/
+wamt.Polygon.prototype.setY = function(y)
+{
+	this.y = y;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the position of the object.
+	@param {Number} x The x-position.
+	@param {Number} y The y-position.
+*/
+wamt.Polygon.prototype.setPosition = function(x,y)
+{
+	this.x = x;
+	this.y = y;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Snap the object to a grid.
+	@param {Number} x The width of the grid blocks.
+	@param {Number} y The height of the grid blocks.
+*/
+wamt.Polygon.prototype.snap = function(x,y)
+{
+	this.translate(-(this.x % x),-(this.y % y));
+};
+/*
+	@function
+	@description Translate the object (move) on the x-axis.
+	@param {Number} x The x-offset.
+*/
+wamt.Polygon.prototype.translateX = function(x)
+{
+	this.x += x;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Translate the object (move) on the y-axis.
+	@param {Number} y The y-offset.
+*/
+wamt.Polygon.prototype.translateY = function(y)
+{
+	this.y += y;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Translate the object (move).
+	@param {Number} x The x-offset.
+	@param {Number} y The y-offset.
+*/
+wamt.Polygon.prototype.translate = function(x,y)
+{
+	this.x += x;
+	this.y += y;
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the velocity of the object.
+	@param {Number} x The x-axis pixels per logic speed.
+	@param {Number} y The y-axis pixels per logic speed.
+*/
+wamt.Polygon.prototype.setVelocity = function(x,y)
+{
+	this.velocity = [x,y];
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Stop the object's velocity.
+*/
+wamt.Polygon.prototype.stop = function()
+{
+	this.velocity = [0,0];
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the object's rotation.
+	@param {Number} angle The new rotation/angle. (degrees)
+*/
 wamt.Polygon.prototype.setAngle = function(angle)
 {
 	this.angle = angle % 360;
@@ -270,6 +410,11 @@ wamt.Polygon.prototype.setAngle = function(angle)
 	this.computeBounds();
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Rotate the object.
+	@param {Number} angle The angle offset to rotate by. (degrees)
+*/
 wamt.Polygon.prototype.rotate = function(angle)
 {
 	this.angle += angle;
@@ -278,13 +423,24 @@ wamt.Polygon.prototype.rotate = function(angle)
 	this.computeBounds();
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the object's behaviour.
+	@param {Object} The behaviour manager. (eg. wamt.behaviours.projectile)
+*/
 wamt.Polygon.prototype.setBehaviour = function(behaviour)
 {
 	this.behaviour = behaviour;
-	if(typeof(behaviour.init) != "undefined")
+	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Add an event listener to the object.
+	@param {String} type The type of event.
+	@param {Function} bind The callback for the event.
+*/
 wamt.Polygon.prototype.addEventListener = function(type,bind)
 {
 	var e = this.events[type];
@@ -292,6 +448,12 @@ wamt.Polygon.prototype.addEventListener = function(type,bind)
 		this.events[type] = [];
 	this.events[type].push(bind);
 };
+/*
+	@function
+	@description Process an event listener on the object.
+	@param {String} type The type of event.
+	@param {Object} holder The holder object to be sent along to the event callback.
+*/
 wamt.Polygon.prototype.processEvent = function(type,holder)
 {
 	var e = this.events[type];
@@ -301,6 +463,10 @@ wamt.Polygon.prototype.processEvent = function(type,holder)
 			e[i](holder);
 	}
 };
+/*
+	@function
+	@description Destroy the object & remove it from the scene.
+*/
 wamt.Polygon.prototype.destroy = function()
 {
 	this.scene.removeObject(this);

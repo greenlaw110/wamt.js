@@ -1,7 +1,13 @@
 /*
-	@title light.js
-	@author Zack0Wack0/zack0wack0.com
-	@package wamt.js
+	wamt.js/light.js
+	@author Zack0Wack0/http://zack0wack0.com
+*/
+/*
+	@class The Light is a renderable object that renders a radial gradient filled circle and optionally causes other renderables to shadow-cast.
+	@param {Array} color An RGBA array of colours to use for the light's center.
+	@param {Number} intensity The intensity (radius) of the object.
+	@param {Number} x The x-position of the object.
+	@param {Number} y The y-position of the object.
 */
 wamt.Light = function(color,intensity,x,y)
 {
@@ -19,15 +25,29 @@ wamt.Light = function(color,intensity,x,y)
 	this.computeBounds();
 };
 wamt.Light.prototype.constructor = wamt.Light;
+/*
+	@function
+	@description Compute the bounds of the object, from the intensity (radius).
+*/
 wamt.Light.prototype.computeBounds = function()
 {
 	this.bounds = [this.intensity * 2,this.intensity * 2];
 };
+/*
+	@function
+	@description Set whether the object is visible.
+	@param {Bool} visible Is the object visible?
+*/
 wamt.Light.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Process the object's logic. (handles velocity, behaviours, etc)
+	@param {Scene} scene The parent scene processing logic.
+*/
 wamt.Light.prototype.logic = function(scene,layer,view)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -44,6 +64,13 @@ wamt.Light.prototype.logic = function(scene,layer,view)
 		this.behaviour.logic(this);
 	this.processEvent("logic",{object:this,scene:scene});
 };
+/*
+	@function
+	@description Process the object's screen position and other misc. stuff (behaviours)
+	@param {Scene} scene The parent scene.
+	@param {Layer} layer The parent layer.
+	@param {View} view The parent view.
+*/
 wamt.Light.prototype.tick = function(scene,layer,view)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -84,6 +111,11 @@ wamt.Light.prototype.tick = function(scene,layer,view)
 		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
 };
+/*
+	@function
+	@description Render the object to the screen.
+	@param {View} view The view to render the object into.
+*/
 wamt.Light.prototype.render = function(view)
 {
 	var hasBehaviour = typeof(this.behaviour) != "undefined";
@@ -102,17 +134,40 @@ wamt.Light.prototype.render = function(view)
 		this.behaviour.render(this);
 	this.processEvent("render",{object: this,view: view});
 };
-wamt.Light.prototype.setColor = function(red,green,blue,alpha)
+/*
+	@function
+	@description Set the light's center colour.
+	@param {Number} r The red colour value.
+	@param {Number} g The green colour value.
+	@param {Number} b The blue colour value.
+	@param {Number} a The alpha colour value.
+*/
+wamt.Light.prototype.setColor = function(r,g,b,a)
 {
-	this.color = [red,green,blue,alpha];
+	if(r instanceof Array)
+		this.color = r;
+	else
+		this.color = [r,g,b,a];
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the light's intensity (radius).
+	@param {Number} intensity The intensity.
+*/
 wamt.Light.prototype.setIntensity = function(intensity)
 {
+	if(intensity < 1)
+		intensity = 1;
 	this.intensity = intensity;
 	this.computeBounds();
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Intensify the light. (enlarge radius)
+	@param {Number} intensity The amount to intensify by.
+*/
 wamt.Light.prototype.intensify = function(intensity)
 {
 	this.intensity += intensity;
@@ -121,58 +176,128 @@ wamt.Light.prototype.intensify = function(intensity)
 	this.computeBounds();
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the opacity of the object.
+	@param {Number} opacity The new opacity of the object.
+*/
 wamt.Light.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the x-position of the object.
+	@param {Number} x The x-position.
+*/
 wamt.Light.prototype.setX = function(x)
 {
 	this.x = x;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the y-position of the object.
+	@param {Number} y The y-position.
+*/
 wamt.Light.prototype.setY = function(y)
 {
 	this.y = y;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the position of the object.
+	@param {Number} x The x-position.
+	@param {Number} y The y-position.
+*/
 wamt.Light.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Snap the object to a grid.
+	@param {Number} x The width of the grid blocks.
+	@param {Number} y The height of the grid blocks.
+*/
 wamt.Light.prototype.snap = function(x,y)
 {
 	this.translate(-(this.x % x),-(this.y % y));
 };
+/*
+	@function
+	@description Translate the object (move) on the x-axis.
+	@param {Number} x The x-offset.
+*/
 wamt.Light.prototype.translateX = function(x)
 {
 	this.x += x;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Translate the object (move) on the y-axis.
+	@param {Number} y The y-offset.
+*/
 wamt.Light.prototype.translateY = function(y)
 {
 	this.y += y;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Translate the object (move).
+	@param {Number} x The x-offset.
+	@param {Number} y The y-offset.
+*/
 wamt.Light.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Set the velocity of the object.
+	@param {Number} x The x-axis pixels per logic speed.
+	@param {Number} y The y-axis pixels per logic speed.
+*/
 wamt.Light.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Stop the object's velocity.
+*/
+wamt.Light.prototype.stop = function()
+{
+	this.velocity = [0,0];
+	this.scene.updated = true;
+};
+/*
+	@function
+	@description Set the object's behaviour.
+	@param {Object} The behaviour manager. (eg. wamt.behaviours.projectile)
+*/
 wamt.Light.prototype.setBehaviour = function(behaviour)
 {
 	this.behaviour = behaviour;
-	behaviour.init(this);
+	if(typeof(behaviour) != "undefined")
+		behaviour.init(this);
 	this.scene.updated = true;
 };
+/*
+	@function
+	@description Add an event listener to the object.
+	@param {String} type The type of event.
+	@param {Function} bind The callback for the event.
+*/
 wamt.Light.prototype.addEventListener = function(type,bind)
 {
 	var e = this.events[type];
@@ -180,6 +305,12 @@ wamt.Light.prototype.addEventListener = function(type,bind)
 		this.events[type] = [];
 	this.events[type].push(bind);
 };
+/*
+	@function
+	@description Process an event listener on the object.
+	@param {String} type The type of event.
+	@param {Object} holder The holder object to be sent along to the event callback.
+*/
 wamt.Light.prototype.processEvent = function(type,holder)
 {
 	var e = this.events[type];
@@ -189,6 +320,10 @@ wamt.Light.prototype.processEvent = function(type,holder)
 			e[i](holder);
 	}
 };
+/*
+	@function
+	@description Destroy the object & remove it from the scene.
+*/
 wamt.Light.prototype.destroy = function()
 {
 	this.scene.removeObject(this);
