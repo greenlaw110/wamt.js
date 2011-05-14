@@ -26,8 +26,9 @@ wamt.Sprite = function(image,x,y,angle)
 	this.screenY = this.y;
 	this.angle = typeof(angle) == "undefined" ? 0 : angle;
 	this.radians = typeof(angle) == "undefined" ? 0 : Math.radians(angle);
-	this.width = image.width;
-	this.height = image.height;
+	var isVideo = typeof(image.videoWidth) != "undefined";
+	this.width = isVideo ? image.videoWidth : image.width;
+	this.height = isVideo ? image.videoHeight : image.height;
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.shadowcast = false;
 	this.visible = true;
@@ -195,16 +196,9 @@ wamt.Sprite.prototype.setImage = function(image)
 {
 	this.clearTileAnimations();
 	this.image = image;
-	if(typeof(image.videoWidth) != "undefined")
-	{
-		this.width = image.videoWidth;
-		this.height = image.videoHeight;
-	}
-	else
-	{
-		this.width = image.width;
-		this.height = image.height;
-	}
+	var isVideo = typeof(image.videoWidth) != "undefined";
+	this.width = isVideo ? image.videoWidth : image.width;
+	this.height = isVideo ? image.videoHeight : image.height;
 	this.computeBounds();
 	this.scene.updated = true;
 };
