@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="box2d.min.js"></script>
 		<video id="video" autoplay style="display:none"> 
 			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.ogv" type='video/ogg; codecs="theora, vorbis"'>
 		</video>
 		<script>
 			var texture_archersheet = new Image();
@@ -53,11 +54,9 @@
 					"click",
 					function(event)
 					{
-						if(event.which != 1)
-							return;
 						var width = Math.round(10 + Math.random() * 20);
-						var mouseX = event.offsetX;
-						var mouseY = event.offsetY;
+						var mouseX = event.original.offsetX | event.original.layerX;
+						var mouseY = event.original.offsetY | event.original.layerY;
 						var x = (view.x + mouseX - (view.canvas.width / 2));
 						var y = (view.y + mouseY - (view.canvas.height / 2));
 						if(Math.random() >= 0.5)

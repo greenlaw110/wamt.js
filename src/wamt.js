@@ -415,38 +415,31 @@ wamt.View.prototype.addEventListener = function(type,bind)
 	if(typeof(e) == "undefined")
 		this.events[type] = [];
 	this.events[type].push(bind);
+	var rthis = this;
 	switch(type)
 	{
 		case "mousemove":
 			this.canvas.addEventListener("mousemove",function(event)
 			{
-				event.view = this;
-				event.context = this.view;
-				bind(event);
+				bind({original:event,view:rthis,context:rthis.context});
 			},false);
 			break;
 		case "mousedown":
 			this.canvas.addEventListener("mousedown",function(event)
 			{
-				event.view = this;
-				event.context = this.view;
-				bind(event);
+				bind({original:event,view:rthis,context:rthis.context});
 			},false);
 			break;
 		case "mouseup":
 			this.canvas.addEventListener("mouseup",function(event)
 			{
-				event.view = this;
-				event.context = this.view;
-				bind(event);
+				bind({original:event,view:rthis,context:rthis.context});
 			},false);
 			break;
 		case "click":
 			this.canvas.addEventListener("click",function(event)
 			{
-				event.view = this;
-				event.context = this.view;
-				bind(event);
+				bind({original:event,view:rthis,context:rthis.context});
 			},false);
 			break;
 	}
