@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../src/wamt.js"></script>
+		<script type="text/javascript" src="../src/collision.js"></script>
+		<script type="text/javascript" src="../src/sprite.js"></script>
+		<script type="text/javascript" src="../src/text.js"></script>
+		<script type="text/javascript" src="../src/circle.js"></script>
+		<script type="text/javascript" src="../src/box.js"></script>
+		<script type="text/javascript" src="prototype-1.6.0.2.min.js"></script>
+		<script type="text/javascript" src="box2d.min.js"></script>
+		<video id="video" autoplay style="display:none"> 
+			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+		</video>
+		<script>
+			var texture_archersheet = new Image();
+			texture_archersheet.src = "images/archer_tilesheet.png";
+			var scene,view,guilayer,fpscounter;
+			var objlayer;
+			var worldAABB,world;
+			var mouseJoint;
+			var timeStep = 1 / 25;
+			var objects = [];
+			var dragging = false;
+			var video_obj;
+			var video_element = document.getElementById("video");
+			function init()
+			{
+				canvas = document.getElementById("canvas");
+				scene = new wamt.Scene();
+				view = new wamt.View(canvas,0,0);
+				view.setBackdrop("#00ff00");
+				objlayer = scene.createLayer(0);
+				guilayer = scene.createLayer(1);
+				guilayer.setLocked(true);
+				fpscounter = new wamt.Text("FPS: 0","16px Arial Black","#ffffff",2,18);
+				guilayer.addObject(fpscounter);
+				guilayer.addObject(new wamt.Text("Box2D.js Physics test (click to spawn objects)","14px Arial","#aa0000",100,18));
+				worldAABB = new b2AABB();
+				worldAABB.minVertex.Set(-1000,-1000);
+				worldAABB.maxVertex.Set(1000,1000);
+				world = new b2World(worldAABB,new b2Vec2(0,9),false);
+				createBox(0,290,800,20,0.0,"#000000");
+				for(var z=0;z<10;z++)
+				{
+					if(z % 2 == 0)
+						createBox(-300 + Math.round(Math.random() * 600),Math.round(Math.random() * 100) - 150,20,20,1.0,"#" + Math.round(Math.random() * 16777215).toString(16));
+					else
+						createCircle(-300 + Math.round(Math.random() * 600),Math.round(Math.random() * 100) - 150,20,1.0,"#" + Math.round(Math.random() * 16777215).toString(16));
+				}
+				view.addEventListener
+				(
+					"click",
+					function(event)
+					{
+						if(event.which != 1)
+							return;
+						var width = Math.round(10 + Math.random() * 20);
+						var mouseX = event.offsetX;
+						var mouseY = event.offsetY;
+						var x = (view.x + mouseX - (view.canvas.width / 2));
+						var y = (view.y + mouseY - (view.canvas.height / 2));
+						if(Math.random() >= 0.5)
+							createBox(x,y,width,width,1.0,"#" + Math.round(Math.random() * 16777215).toString(16));
+						else
+							createCircle(x,y,width / 2,1.0,"#" + Math.round(Math.random() * 16777215).toString(16));
+					}
+				);
+				wamt.play(scene);
+				render();
+			}
+			function createBox(x,y,width,height,density,colour)
+			{
+				var renderable = new wamt.Box(colour,width,height,x,y);
+				var boxSd = new b2BoxDef();
+				boxSd.density = density;
+				var hw = width / 2;
+				var hh = height / 2;
+				boxSd.extents.Set(hw,hh);
+				var boxBd = new b2BodyDef();
+				boxBd.AddShape(boxSd);
+				boxBd.position.Set(x,y);
+				objlayer.addObject(renderable);
+				objects.push(renderable);
+				var body = world.CreateBody(boxBd);
+				body.renderable = renderable;
+				renderable.halfWidth = hw;
+				renderable.halfHeight = hh;
+				renderable.body = body;
+				return renderable;
+			}
+			function createSprite(x,y,density,image)
+			{
+				var renderable = new wamt.Sprite(image,x,y);
+				var boxSd = new b2BoxDef();
+				boxSd.density = density;
+				var hw = renderable.width / 2;
+				var hh = renderable.height / 2;
+				boxSd.extents.Set(hw,hh);
+				var boxBd = new b2BodyDef();
+				boxBd.AddShape(boxSd);
+				boxBd.position.Set(x,y);
+				objlayer.addObject(renderable);
+				objects.push(renderable);
+				var body = world.CreateBody(boxBd);
+				body.renderable = renderable;
+				renderable.halfWidth = hw;
+				renderable.halfHeight = hh;
+				renderable.body = body;
+				return renderable;
+			}
+			function createCircle(x,y,radius,density,colour)
+			{
+				var renderable = new wamt.Circle(colour,radius,x,y);
+				var circleSd = new b2CircleDef();
+				var hr = radius;
+				circleSd.density = density;
+				circleSd.radius = hr;
+				circleSd.restitution = 0.2;
+				var circleBd = new b2BodyDef();
+				circleBd.AddShape(circleSd);
+				circleBd.position.Set(x,y);
+				objlayer.addObject(renderable);
+				objects.push(renderable);
+				var body = world.CreateBody(circleBd);
+				body.renderable = renderable;
+				renderable.halfRadius = hr;
+				renderable.body = body;
+				return renderable;
+			}
+			function render()
+			{
+				world.Step(0.04,1);
+				if(video_element.readyState === video_element.HAVE_ENOUGH_DATA && typeof(video_obj) == "undefined")
+					video_obj = createSprite(0,-300,1.0,video_element);
+				for(var i=0;i<objects.length;i++)
+				{
+					var renderable = objects[i];
+					var pos = renderable.body.m_position0;
+					if(renderable.width)
+						renderable.setPosition(pos.x - renderable.halfWidth,pos.y - renderable.halfHeight);
+					else if(renderable.radius)
+						renderable.setPosition(pos.x,pos.y);
+					renderable.setAngle(Math.degrees(renderable.body.m_rotation0));
+				}
+				wamt.process(scene,view);
+				fpscounter.setText("FPS: " + wamt.fps);
+				requestAnimationFrame(render);
+			}
+		</script>
+	</head>
+	<body onload="init();">
+		<center>
+			<canvas id="canvas" width=800 height=600>
+			</canvas>
+		</center>
+	</body>
+</html>
