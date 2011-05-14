@@ -7,7 +7,9 @@ Examples
 [Object collision](http://zack0wack0.com/wamt.js/examples/objectcollision.html)  
 [Point collision](http://zack0wack0.com/wamt.js/examples/pointcollision.html)  
 [Shadow casting](http://zack0wack0.com/wamt.js/examples/shadowcasting.html)  
-[Constant velocity](http://zack0wack0.com/wamt.js/examples/velocity.html)  
+[Constant velocity](http://zack0wack0.com/wamt.js/examples/velocity.html)
+[Video](http://zack0wack0.com/wamt.js/examples/video.html)
+[Box2DJS physics](http://zack0wack0.com/wamt.js/examples/box2dphysics.html)
 
 Contributors
 --------
