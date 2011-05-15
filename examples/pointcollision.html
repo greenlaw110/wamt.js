@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="description" content="A point collision test with wamt.js."/>
+		<meta name="keywords" content="wamt.js, Canvas, HTML5, Javascript, HTML, 2d, game, engine"/>
+		<title> wamt.js - point collision - example</title>
 		<script type="text/javascript" src="../src/wamt.js"></script>
 		<script type="text/javascript" src="../src/sprite.js"></script>
 		<script type="text/javascript" src="../src/collision.js"></script>
@@ -44,9 +47,9 @@
 				fpscounter = new wamt.Text("FPS: 0","16px Arial Black","#ffffff",2,18);
 				guilayer.addObject(fpscounter);
 				guilayer.addObject(new wamt.Text("Very basic point collision. It's a bit buggy at the moment.","14px Arial","#aa0000",300,18));
-				view.addEventListener("mousedown",mousedown,false);
-				view.addEventListener("mouseup",mouseup,false);
-				view.addEventListener("mousemove",mousemove,false);
+				view.addEventListener("mousedown",mousedown);
+				view.addEventListener("mouseup",mouseup);
+				view.addEventListener("mousemove",mousemove);
 				document.addEventListener("keyup",keyup,false);
 				document.addEventListener("keydown",keydown,false);
 				wamt.play(scene);
@@ -71,20 +74,18 @@
 			}
 			function mousemove(event)
 			{
-				if(event.offsetX)
+				if(event.original.offsetX)
 				{
-					mouseX = event.offsetX;
-					mouseY = event.offsetY;
+					mouseX = event.original.offsetX;
+					mouseY = event.original.offsetY;
 				}
-				else if(e.layerX)
+				else if(e.original.layerX)
 				{
-					mouseX = event.layerX;
-					mouseY = event.layerY;
+					mouseX = event.original.layerX;
+					mouseY = event.original.layerY;
 				}
 				if(dragging != -1)
-				{
 					dragging.setPosition(view.x + mouseX - (view.canvas.width / 2) - dragging.bounds[0] / 2,view.y + mouseY - (view.canvas.height / 2) - dragging.bounds[1] / 2);
-				}
 			}
 			function keyup(event)
 			{

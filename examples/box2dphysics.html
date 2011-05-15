@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="description" content="A box2d physics example powered with wamt.js."/>
+		<meta name="keywords" content="wamt.js, box2d, Canvas, HTML5, Javascript, HTML, 2d, game, engine"/>
+		<title>wamt.js - box2d physics - example</title>
+		<video id="video" autoplay style="display:none"> 
+			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.ogv" type='video/ogg; codecs="theora, vorbis"'>
+		</video>
 		<script type="text/javascript" src="../src/wamt.js"></script>
 		<script type="text/javascript" src="../src/collision.js"></script>
 		<script type="text/javascript" src="../src/sprite.js"></script>
@@ -9,10 +16,6 @@
 		<script type="text/javascript" src="../src/box.js"></script>
 		<script type="text/javascript" src="prototype-1.6.0.2.min.js"></script>
 		<script type="text/javascript" src="box2d.min.js"></script>
-		<video id="video" autoplay style="display:none"> 
-			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-			<source src="http://dl.dropbox.com/u/551734/videos/hookedonyoubrockdub.ogv" type='video/ogg; codecs="theora, vorbis"'>
-		</video>
 		<script>
 			var texture_archersheet = new Image();
 			texture_archersheet.src = "images/archer_tilesheet.png";
@@ -55,8 +58,16 @@
 					function(event)
 					{
 						var width = Math.round(10 + Math.random() * 20);
-						var mouseX = event.original.offsetX | event.original.layerX;
-						var mouseY = event.original.offsetY | event.original.layerY;
+						if(event.original.offsetX)
+						{
+							var mouseX = event.original.offsetX;
+							var mouseY = event.original.offsetY;
+						}
+						else
+						{
+							var mouseX = event.original.layerX;
+							var mouseY = event.original.layerY;
+						}
 						var x = (view.x + mouseX - (view.canvas.width / 2));
 						var y = (view.y + mouseY - (view.canvas.height / 2));
 						if(Math.random() >= 0.5)
@@ -129,7 +140,7 @@
 			}
 			function render()
 			{
-				world.Step(0.04,1);
+				world.Step(timeStep,1);
 				if(video_element.readyState === video_element.HAVE_ENOUGH_DATA && typeof(video_obj) == "undefined")
 					video_obj = createSprite(0,-300,1.0,video_element);
 				for(var i=0;i<objects.length;i++)
