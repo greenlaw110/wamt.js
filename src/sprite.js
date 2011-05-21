@@ -10,6 +10,7 @@
 */
 wamt.Sprite = function(image,x,y,angle)
 {
+	image = typeof(image.data) != "undefined" ? image.canvas : image;
 	this.events = [];
 	this.collideable = true;
 	this.image = image;
@@ -135,10 +136,13 @@ wamt.Sprite.prototype.render = function(view)
 	context.shadowBlur = this.shadow[2];
 	context.shadowColor = this.shadow[3];
 	var animation = this.tileAnimations[this.tileAnimation];
+	var image = this.image;
 	if(typeof(animation) == "undefined")
 	{
 		if(radians == 0)
-			context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
+		{
+			context.drawImage(image,this.screenX,this.screenY,this.width,this.height);
+		}
 		else
 		{
 			var transx = (this.width / 2) + this.screenX;
@@ -147,7 +151,7 @@ wamt.Sprite.prototype.render = function(view)
 			context.translate(transx,transy);
 			context.rotate(radians);
 			context.translate(-transx,-transy);
-			context.drawImage(this.image,this.screenX,this.screenY,this.width,this.height);
+			context.drawImage(image,this.screenX,this.screenY,this.width,this.height);
 			context.restore();
 		}
 	}
@@ -164,7 +168,7 @@ wamt.Sprite.prototype.render = function(view)
 		var tilex = Math.floor(ff % animation[2]);
 		var tiley = Math.floor(ff % animation[3]);
 		if(radians == 0)
-			context.drawImage(this.image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
+			context.drawImage(image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
 		else
 		{
 			var transx = (this.width / 2) + this.screenX;
@@ -173,7 +177,7 @@ wamt.Sprite.prototype.render = function(view)
 			context.translate(transx,transy);
 			context.rotate(radians);
 			context.translate(-transx,-transy);
-			context.drawImage(this.image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
+			context.drawImage(image,animation[0] * this.tileWidth + tilex * this.tileWidth,animation[1] * this.tileHeight + tiley * this.tileHeight,this.tileWidth,this.tileHeight,this.screenX,this.screenY,this.width,this.height);
 			context.restore();
 		}
 	}
@@ -194,6 +198,7 @@ wamt.Sprite.prototype.render = function(view)
 */
 wamt.Sprite.prototype.setImage = function(image)
 {
+	image = typeof(image.data) != "undefined" ? image.canvas : image;
 	this.clearTileAnimations();
 	this.image = image;
 	var isVideo = typeof(image.videoWidth) != "undefined";

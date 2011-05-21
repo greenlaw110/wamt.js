@@ -115,6 +115,7 @@
 					archer.setVelocity(-5,0);
 				}
 				screen_image.setPixel(Math.floor(Math.random() * 16),Math.floor(Math.random() * 16),[255,0,0,255]);
+				screen_image.render();
 				wamt.process(scene,view);
 				fpscounter.setText("FPS: " + wamt.fps);
 				requestAnimationFrame(render);

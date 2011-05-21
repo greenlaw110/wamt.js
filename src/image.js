@@ -63,7 +63,6 @@ wamt.Image.prototype.setPixel = function(x,y,r,g,b,a)
 	data.data[i + 1] = g;
 	data.data[i + 2] = b;
 	data.data[i + 3] = a;
-	this.render();
 };
 /*
 	@description Fill a rectangle on the image.
@@ -282,6 +281,7 @@ wamt.Image.prototype.empty = function(width,height)
 	this.width = width;
 	this.height = height;
 	this.data = context.createImageData(width,height);
+	this.render();
 };
 /*
 	@description Load a DOM Image into the image.

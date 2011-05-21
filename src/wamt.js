@@ -83,6 +83,8 @@ wamt.process = function(scene,view)
 	var context = view.context;
 	if(scene.updated || view.updated)
 	{
+		context.save();
+		context.scale(view.zoom,view.zoom);
 		view.clearCanvas();
 		view.renderBackdrop();
 		var target = view.target;
@@ -131,6 +133,7 @@ wamt.process = function(scene,view)
 		scene.processEvent("render",{scene:scene,view:view});
 		scene.updated = false;
 		view.updated = false;
+		context.restore();
 	}
 	else
 	{
@@ -400,6 +403,7 @@ wamt.View = function(canvas,x,y)
 	this.context = canvas.getContext("2d");
 	this.x = typeof(x) == "undefined" ? canvas.width / 2 : x;
 	this.y = typeof(y) == "undefined" ? canvas.height / 2 : y;
+	this.zoom = 1;
 };
 wamt.View.prototype.constructor = wamt.View;
 /*
