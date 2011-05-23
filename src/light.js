@@ -33,6 +33,11 @@ wamt.Light.prototype.computeBounds = function()
 {
 	this.bounds = [this.intensity * 2,this.intensity * 2];
 };
+wamt.Light.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is visible.
@@ -41,7 +46,7 @@ wamt.Light.prototype.computeBounds = function()
 wamt.Light.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -148,7 +153,7 @@ wamt.Light.prototype.setColor = function(r,g,b,a)
 		this.color = r;
 	else
 		this.color = [r,g,b,a];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -161,7 +166,7 @@ wamt.Light.prototype.setIntensity = function(intensity)
 		intensity = 1;
 	this.intensity = intensity;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -174,7 +179,7 @@ wamt.Light.prototype.intensify = function(intensity)
 	if(this.intensity < 1)
 		this.intensity = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -184,7 +189,7 @@ wamt.Light.prototype.intensify = function(intensity)
 wamt.Light.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -194,7 +199,7 @@ wamt.Light.prototype.setOpacity = function(opacity)
 wamt.Light.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -204,7 +209,7 @@ wamt.Light.prototype.setX = function(x)
 wamt.Light.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -216,7 +221,7 @@ wamt.Light.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -236,7 +241,7 @@ wamt.Light.prototype.snap = function(x,y)
 wamt.Light.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -246,7 +251,7 @@ wamt.Light.prototype.translateX = function(x)
 wamt.Light.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -258,7 +263,7 @@ wamt.Light.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -269,7 +274,7 @@ wamt.Light.prototype.translate = function(x,y)
 wamt.Light.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -278,7 +283,7 @@ wamt.Light.prototype.setVelocity = function(x,y)
 wamt.Light.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -290,7 +295,7 @@ wamt.Light.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

@@ -39,6 +39,11 @@ wamt.Circle.prototype.computeBounds = function()
 {
 	this.bounds = [this.radius * 2,this.radius * 2];
 };
+wamt.Circle.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is colliding.
@@ -56,7 +61,7 @@ wamt.Circle.prototype.setColliding = function(colliding)
 wamt.Circle.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -66,7 +71,7 @@ wamt.Circle.prototype.setVisible = function(visible)
 wamt.Circle.prototype.setHollow = function(hollow)
 {
 	this.hollow = hollow;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -183,7 +188,7 @@ wamt.Circle.prototype.setRadius = function(radius)
 		radius = 1;
 	this.radius = radius;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -196,7 +201,7 @@ wamt.Circle.prototype.stretch = function(radius)
 	if(this.radius < 1)
 		this.radius = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -206,7 +211,7 @@ wamt.Circle.prototype.stretch = function(radius)
 wamt.Circle.prototype.setStyle = function(style)
 {
 	this.style = style;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -219,7 +224,7 @@ wamt.Circle.prototype.setStyle = function(style)
 wamt.Circle.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -229,7 +234,7 @@ wamt.Circle.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Circle.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -239,7 +244,7 @@ wamt.Circle.prototype.setShadowCasting = function(shadowcast)
 wamt.Circle.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -249,7 +254,7 @@ wamt.Circle.prototype.setOpacity = function(opacity)
 wamt.Circle.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -259,7 +264,7 @@ wamt.Circle.prototype.setX = function(x)
 wamt.Circle.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -271,7 +276,7 @@ wamt.Circle.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -291,7 +296,7 @@ wamt.Circle.prototype.snap = function(x,y)
 wamt.Circle.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -301,7 +306,7 @@ wamt.Circle.prototype.translateX = function(x)
 wamt.Circle.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -313,7 +318,7 @@ wamt.Circle.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -324,7 +329,7 @@ wamt.Circle.prototype.translate = function(x,y)
 wamt.Circle.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -333,7 +338,7 @@ wamt.Circle.prototype.setVelocity = function(x,y)
 wamt.Circle.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -345,7 +350,7 @@ wamt.Circle.prototype.setAngle = function(angle)
 	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -358,7 +363,7 @@ wamt.Circle.prototype.rotate = function(angle)
 	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -370,7 +375,7 @@ wamt.Circle.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

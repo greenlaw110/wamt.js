@@ -45,6 +45,11 @@ wamt.Box.prototype.computeBounds = function()
 	else
 		this.bounds = [Math.abs(Math.cos(this.angle) * this.width),Math.abs(Math.sin(this.angle) * this.height)];
 };
+wamt.Box.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is colliding.
@@ -62,7 +67,7 @@ wamt.Box.prototype.setColliding = function(colliding)
 wamt.Box.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -72,7 +77,7 @@ wamt.Box.prototype.setVisible = function(visible)
 wamt.Box.prototype.setHollow = function(hollow)
 {
 	this.hollow = hollow;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -185,7 +190,7 @@ wamt.Box.prototype.setWidth = function(width)
 		width = 1;
 	this.width = width;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -198,7 +203,7 @@ wamt.Box.prototype.setHeight = function(height)
 		height = 1;
 	this.height = height;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -215,7 +220,7 @@ wamt.Box.prototype.setSize = function(width,height)
 	this.width = width;
 	this.height = height;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -228,7 +233,7 @@ wamt.Box.prototype.stretchX = function(width)
 	if(this.width < 1)
 		this.width = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -241,7 +246,7 @@ wamt.Box.prototype.stretchY = function(height)
 	if(this.height < 1)
 		this.height = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -258,7 +263,7 @@ wamt.Box.prototype.stretch = function(width,height)
 	if(this.height < 1)
 		this.height = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -268,7 +273,7 @@ wamt.Box.prototype.stretch = function(width,height)
 wamt.Box.prototype.setStyle = function(style)
 {
 	this.style = style;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -281,7 +286,7 @@ wamt.Box.prototype.setStyle = function(style)
 wamt.Box.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -291,7 +296,7 @@ wamt.Box.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Box.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -301,7 +306,7 @@ wamt.Box.prototype.setShadowCasting = function(shadowcast)
 wamt.Box.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -311,7 +316,7 @@ wamt.Box.prototype.setOpacity = function(opacity)
 wamt.Box.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -321,7 +326,7 @@ wamt.Box.prototype.setX = function(x)
 wamt.Box.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -333,7 +338,7 @@ wamt.Box.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -353,7 +358,7 @@ wamt.Box.prototype.snap = function(x,y)
 wamt.Box.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -363,7 +368,7 @@ wamt.Box.prototype.translateX = function(x)
 wamt.Box.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -375,7 +380,7 @@ wamt.Box.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -386,7 +391,7 @@ wamt.Box.prototype.translate = function(x,y)
 wamt.Box.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -395,7 +400,7 @@ wamt.Box.prototype.setVelocity = function(x,y)
 wamt.Box.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -407,7 +412,7 @@ wamt.Box.prototype.setAngle = function(angle)
 	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -420,7 +425,7 @@ wamt.Box.prototype.rotate = function(angle)
 	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -432,7 +437,7 @@ wamt.Box.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

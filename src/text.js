@@ -49,6 +49,11 @@ wamt.Text.prototype.computeBounds = function()
 	else
 		this.bounds = [Math.abs(Math.cos(this.angle) * this.width),Math.abs(Math.sin(this.angle) * this.height)];
 };
+wamt.Text.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is colliding.
@@ -66,7 +71,7 @@ wamt.Text.prototype.setColliding = function(colliding)
 wamt.Text.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -76,7 +81,7 @@ wamt.Text.prototype.setVisible = function(visible)
 wamt.Text.prototype.setHollow = function(hollow)
 {
 	this.hollow = hollow;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -227,7 +232,7 @@ wamt.Text.prototype.setStyle = function(style)
 {
 	this.style = style;
 	this.updated = true;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -239,7 +244,7 @@ wamt.Text.prototype.setFont = function(font)
 {
 	this.font = font;
 	this.updated = true;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -250,7 +255,7 @@ wamt.Text.prototype.setText = function(text)
 {
 	this.text = String(text).split("\n");
 	this.updated = true;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -261,7 +266,7 @@ wamt.Text.prototype.setText = function(text)
 wamt.Text.prototype.setTextAlign = function(align)
 {
 	this.align = align;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -274,7 +279,7 @@ wamt.Text.prototype.setTextAlign = function(align)
 wamt.Text.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -284,7 +289,7 @@ wamt.Text.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Text.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -294,7 +299,7 @@ wamt.Text.prototype.setShadowCasting = function(shadowcast)
 wamt.Text.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -304,7 +309,7 @@ wamt.Text.prototype.setOpacity = function(opacity)
 wamt.Text.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -314,7 +319,7 @@ wamt.Text.prototype.setX = function(x)
 wamt.Text.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -326,7 +331,7 @@ wamt.Text.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -346,7 +351,7 @@ wamt.Text.prototype.snap = function(x,y)
 wamt.Text.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -356,7 +361,7 @@ wamt.Text.prototype.translateX = function(x)
 wamt.Text.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -368,7 +373,7 @@ wamt.Text.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -379,7 +384,7 @@ wamt.Text.prototype.translate = function(x,y)
 wamt.Text.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -388,7 +393,7 @@ wamt.Text.prototype.setVelocity = function(x,y)
 wamt.Text.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -400,7 +405,7 @@ wamt.Text.prototype.setAngle = function(angle)
 	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -413,7 +418,7 @@ wamt.Text.prototype.rotate = function(angle)
 	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -425,7 +430,7 @@ wamt.Text.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

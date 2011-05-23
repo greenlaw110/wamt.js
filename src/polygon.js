@@ -57,6 +57,11 @@ wamt.Polygon.prototype.computeBounds = function()
 	else
 		this.bounds = [maxx - minx,maxy - miny];
 };
+wamt.Polygon.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is colliding.
@@ -65,7 +70,7 @@ wamt.Polygon.prototype.computeBounds = function()
 wamt.Polygon.prototype.setColliding = function(colliding)
 {
 	this.collideable = colliding;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -75,7 +80,7 @@ wamt.Polygon.prototype.setColliding = function(colliding)
 wamt.Polygon.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -85,7 +90,7 @@ wamt.Polygon.prototype.setVisible = function(visible)
 wamt.Polygon.prototype.setHollow = function(hollow)
 {
 	this.hollow = hollow;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -209,7 +214,7 @@ wamt.Polygon.prototype.setVertices = function(vertices)
 {
 	this.vertices = vertices;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -225,7 +230,7 @@ wamt.Polygon.prototype.stretchX = function(x)
 		vertice[0] += x;
 	}
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -241,7 +246,7 @@ wamt.Polygon.prototype.stretchY = function(y)
 		vertice[1] += y;
 	}
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -259,7 +264,7 @@ wamt.Polygon.prototype.stretch = function(x,y)
 		vertice[1] += y;
 	}
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -269,7 +274,7 @@ wamt.Polygon.prototype.stretch = function(x,y)
 wamt.Polygon.prototype.setStyle = function(style)
 {
 	this.style = style;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -282,7 +287,7 @@ wamt.Polygon.prototype.setStyle = function(style)
 wamt.Polygon.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -292,7 +297,7 @@ wamt.Polygon.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Polygon.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -302,7 +307,7 @@ wamt.Polygon.prototype.setShadowCasting = function(shadowcast)
 wamt.Polygon.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -312,7 +317,7 @@ wamt.Polygon.prototype.setOpacity = function(opacity)
 wamt.Polygon.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -322,7 +327,7 @@ wamt.Polygon.prototype.setX = function(x)
 wamt.Polygon.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -334,7 +339,7 @@ wamt.Polygon.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -354,7 +359,7 @@ wamt.Polygon.prototype.snap = function(x,y)
 wamt.Polygon.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -364,7 +369,7 @@ wamt.Polygon.prototype.translateX = function(x)
 wamt.Polygon.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -376,7 +381,7 @@ wamt.Polygon.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -387,7 +392,7 @@ wamt.Polygon.prototype.translate = function(x,y)
 wamt.Polygon.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -396,7 +401,7 @@ wamt.Polygon.prototype.setVelocity = function(x,y)
 wamt.Polygon.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -408,7 +413,7 @@ wamt.Polygon.prototype.setAngle = function(angle)
 	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -421,7 +426,7 @@ wamt.Polygon.prototype.rotate = function(angle)
 	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -433,7 +438,7 @@ wamt.Polygon.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

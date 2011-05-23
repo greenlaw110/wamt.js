@@ -50,6 +50,11 @@ wamt.Sprite.prototype.computeBounds = function()
 	else
 		this.bounds = [Math.abs(Math.cos(this.angle) * this.width),Math.abs(Math.sin(this.angle) * this.height)];
 };
+wamt.Sprite.prototype.update = function()
+{
+	if(typeof(this.scene) != "undefined")
+		this.scene.updated = true;
+};
 /*
 	@function
 	@description Set whether the object is colliding.
@@ -67,7 +72,7 @@ wamt.Sprite.prototype.setColliding = function(colliding)
 wamt.Sprite.prototype.setVisible = function(visible)
 {
 	this.visible = visible;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -205,7 +210,7 @@ wamt.Sprite.prototype.setImage = function(image)
 	this.width = isVideo ? image.videoWidth : image.width;
 	this.height = isVideo ? image.videoHeight : image.height;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -220,7 +225,7 @@ wamt.Sprite.prototype.setTiling = function(width,height)
 	this.computeBounds();
 	this.tileWidth = width;
 	this.tileHeight = height;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -264,7 +269,7 @@ wamt.Sprite.prototype.playTileAnimation = function(name,speed)
 		this.tileAnimationFrame = 0;
 	this.tileAnimation = name;
 	this.tileAnimationSpeed = speed;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -276,7 +281,7 @@ wamt.Sprite.prototype.setTileAnimationSpeed = function(speed)
 	if(animation[0] == animation[2] && animation[1] == animation[3])
 		speed = 0;
 	this.tileAnimationSpeed = speed;
-	this.scene.updated = 1;
+	this.update();
 };
 /*
 	@function
@@ -297,7 +302,7 @@ wamt.Sprite.prototype.setWidth = function(width)
 		width = 1;
 	this.width = width;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -310,7 +315,7 @@ wamt.Sprite.prototype.setHeight = function(height)
 		height = 1;
 	this.height = height;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -327,7 +332,7 @@ wamt.Sprite.prototype.setSize = function(width,height)
 	this.width = width;
 	this.height = height;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -340,7 +345,7 @@ wamt.Sprite.prototype.stretchX = function(width)
 	if(this.width < 1)
 		this.width = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -353,7 +358,7 @@ wamt.Sprite.prototype.stretchY = function(height)
 	if(this.height < 1)
 		this.height = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -370,7 +375,7 @@ wamt.Sprite.prototype.stretch = function(width,height)
 	if(this.height < 1)
 		this.height = 1;
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -383,7 +388,7 @@ wamt.Sprite.prototype.stretch = function(width,height)
 wamt.Sprite.prototype.setShadow = function(offsetx,offsety,blur,color)
 {
 	this.shadow = [offsetx,offsety,blur,color];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -393,7 +398,7 @@ wamt.Sprite.prototype.setShadow = function(offsetx,offsety,blur,color)
 wamt.Sprite.prototype.setShadowCasting = function(shadowcast)
 {
 	this.shadowcast = shadowcast;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -403,7 +408,7 @@ wamt.Sprite.prototype.setShadowCasting = function(shadowcast)
 wamt.Sprite.prototype.setOpacity = function(opacity)
 {
 	this.opacity = opacity;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -413,7 +418,7 @@ wamt.Sprite.prototype.setOpacity = function(opacity)
 wamt.Sprite.prototype.setX = function(x)
 {
 	this.x = x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -423,7 +428,7 @@ wamt.Sprite.prototype.setX = function(x)
 wamt.Sprite.prototype.setY = function(y)
 {
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -435,7 +440,7 @@ wamt.Sprite.prototype.setPosition = function(x,y)
 {
 	this.x = x;
 	this.y = y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -455,7 +460,7 @@ wamt.Sprite.prototype.snap = function(x,y)
 wamt.Sprite.prototype.translateX = function(x)
 {
 	this.x += x;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -465,7 +470,7 @@ wamt.Sprite.prototype.translateX = function(x)
 wamt.Sprite.prototype.translateY = function(y)
 {
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -477,7 +482,7 @@ wamt.Sprite.prototype.translate = function(x,y)
 {
 	this.x += x;
 	this.y += y;
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -488,7 +493,7 @@ wamt.Sprite.prototype.translate = function(x,y)
 wamt.Sprite.prototype.setVelocity = function(x,y)
 {
 	this.velocity = [x,y];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -497,7 +502,7 @@ wamt.Sprite.prototype.setVelocity = function(x,y)
 wamt.Sprite.prototype.stop = function()
 {
 	this.velocity = [0,0];
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -509,7 +514,7 @@ wamt.Sprite.prototype.setAngle = function(angle)
 	this.angle = angle % 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -522,7 +527,7 @@ wamt.Sprite.prototype.rotate = function(angle)
 	this.angle %= 360;
 	this.radians = Math.radians(this.angle);
 	this.computeBounds();
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function
@@ -534,7 +539,7 @@ wamt.Sprite.prototype.setBehaviour = function(behaviour)
 	this.behaviour = behaviour;
 	if(typeof(behaviour) != "undefined")
 		behaviour.init(this);
-	this.scene.updated = true;
+	this.update();
 };
 /*
 	@function

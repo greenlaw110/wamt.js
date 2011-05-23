@@ -48,7 +48,7 @@ window.requestAnimationFrame =
 wamt.play = function(scene)
 {
 	var ts = scene;
-	scene.worker = setInterval
+	scene.worker = setTimeout
 	(
 		function()
 		{
@@ -64,7 +64,7 @@ wamt.play = function(scene)
 */
 wamt.pause = function(scene)
 {
-	clearInterval(scene.worker);
+	clearTimeout(scene.worker);
 };
 /*
 	@function
@@ -174,6 +174,7 @@ wamt.Layer.prototype.addObject = function(object)
 	object.scene = this.scene;
 	object.layer = this;
 	this.objects.push(object);
+	this.scene.updated = 1;
 };
 /*
 	@function
@@ -322,8 +323,6 @@ wamt.Scene.prototype.addObject = function(object,layer)
 	if(typeof(tlayer) == "undefined")
 		var tlayer = this.createLayer(layer);
 	tlayer.addObject(object);
-	if(typeof(object.render) != "undefined")
-		this.updated = true;
 };
 /*
 	@function
@@ -331,7 +330,7 @@ wamt.Scene.prototype.addObject = function(object,layer)
 */
 wamt.Scene.prototype.removeObject = function(object)
 {
-	this.getLayer(object.layer.index).removeObject(object);
+	object.layer.removeObject(object);
 };
 /*
 	@function
@@ -361,6 +360,15 @@ wamt.Scene.prototype.logic = function()
 		}
 	}
 	this.processEvent("logic",{scene:this});
+	var ts = this;
+	this.worker = setTimeout
+	(
+		function()
+		{
+			ts.logic();
+		},
+		1000 / 60
+	);
 };
 /*
 	@function
