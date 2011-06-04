@@ -120,6 +120,8 @@ wamt.Sprite.prototype.tick = function(scene,layer,view)
 			this.screenY = -view.y + this.y + (view.canvas.height / 2);
 		}
 	}
+	if(this.tileAnimation != "" && this.tileAnimationSpeed > 0)
+		scene.updated = 1;
 	if(hasBehaviour)
 		this.behaviour.tick(this);
 	this.processEvent("tick",{object:this,scene:scene,layer:layer,view:view});
@@ -263,7 +265,7 @@ wamt.Sprite.prototype.playTileAnimation = function(name,speed)
 	if(typeof(animation) == "undefined")
 		return;
 	speed = typeof(speed) == "number" ? speed : 1;
-	if(animation[0] == animation[2] && animation[1] == animation[3])
+	if(animation[2] <= 1 && animation[3] <= 1)
 		speed = 0;
 	if(name != this.tileAnimation)
 		this.tileAnimationFrame = 0;
