@@ -167,7 +167,7 @@ wamt.Sprite.prototype.render = function(view)
 		var fa = this.tileAnimationSpeed / wamt.delta;
 		var of = Math.floor(this.tileAnimationFrame);
 		this.tileAnimationFrame += fa;
-		if(this.tileAnimationFrame > animation[2] * animation[3] + 1)
+		if(this.tileAnimationFrame > animation[2] * animation[3])
 			this.tileAnimationFrame = 0;
 		var ff = Math.floor(this.tileAnimationFrame);
 		if(ff != of)
