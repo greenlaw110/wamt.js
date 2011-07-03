@@ -248,6 +248,26 @@ wamt.Image.prototype.getPixel = function(x,y)
 	var i = (x + y * this.width) * 4;
 	return [data.data[i + 0],data.data[i + 1],data.data[i + 2],data[i + 3]];
 };
+wamt.Image.prototype.getPixels = function(x,y,ex,ey)
+{
+	var data = this.data;
+	var si = (x + y * this.width) * 4;
+	var ei = (ex + ey * this.width) * 4;
+	var pixel = [];
+	var d = [];
+	for(var i=si;i<ei;i++)
+	{
+		var m = i % 4;
+		if(m == 0)
+		{
+			d.push(pixel);
+			pixel = [];
+		}
+		else
+			pixel.push(data.data[i]);
+	}
+	return d;
+};
 /*
 	@description Store the context's pixels into the image's data.
 */

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="description" content="Collision with wamt.js."/>
+		<meta name="keywords" content="wamt.js, Canvas, HTML5, Javascript, HTML, 2d, game, engine"/>
+		<title> wamt.js - echostorm</title>
+		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		<script type="text/javascript" src="../src/wamt.js"></script>
+		<script type="text/javascript" src="../src/collision.js"></script>
+		<script type="text/javascript" src="../src/text.js"></script>
+		<script type="text/javascript" src="../src/box.js"></script>
+		<script type="text/javascript">
+			var scene,view,canvas;
+			var keyMap = [];
+			var echonestKey = "UI2WKWMFERCZ7GR8K";
+			function init()
+			{
+				canvas = document.getElementById("canvas");
+				scene = new wamt.Scene();
+				view = new wamt.View(canvas,0,0);
+				view.setBackdrop("#232323");
+				document.addEventListener("keyup",keyup,false);
+				document.addEventListener("keydown",keydown,false);
+				wamt.play(scene);
+				render();
+			}
+			function keyup(event)
+			{
+				var keyCode = typeof(event.which) == "undefined" ? event.keyCode : event.which;
+				keyMap[keyCode] = 0;
+			}
+			function keydown(event)
+			{
+				var keyCode = typeof(event.which) == "undefined" ? event.keyCode : event.which;
+				keyMap[keyCode] = 1;
+			}
+			function render()
+			{
+				wamt.process(scene,view);
+				requestAnimationFrame(render);
+			}
+		</script>
+	</head>
+	<body onload="init();">
+		<center>
+			<canvas id="canvas" width=800 height=600>
+			</canvas>
+		</center>
+	</body>
+</html>

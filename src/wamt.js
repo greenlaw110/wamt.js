@@ -261,7 +261,7 @@ wamt.Layer.prototype.processEvent = function(type,holder)
 wamt.Scene = function()
 {
 	this.events = [];
-	this.updated = false;
+	this.updated = true;
 	this.time = new Date();
 	this.layers = [];
 };
@@ -404,7 +404,7 @@ wamt.Scene.prototype.processEvent = function(type,holder)
 	@param {Number} x The view's x-position.
 	@param {Number} y The view's y-position.
 */
-wamt.View = function(canvas,x,y)
+wamt.View = function(canvas,x,y,backdrop)
 {
 	this.events = [];
 	this.canvas = canvas;
@@ -412,6 +412,8 @@ wamt.View = function(canvas,x,y)
 	this.x = typeof(x) == "undefined" ? canvas.width / 2 : x;
 	this.y = typeof(y) == "undefined" ? canvas.height / 2 : y;
 	this.zoom = 1;
+	this.backdrop = backdrop;
+	this.updated = true;
 };
 wamt.View.prototype.constructor = wamt.View;
 /*
