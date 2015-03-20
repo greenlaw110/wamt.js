@@ -280,8 +280,10 @@ wamt.Sprite.prototype.playTileAnimation = function(name,speed)
 */
 wamt.Sprite.prototype.setTileAnimationSpeed = function(speed)
 {
+  /*
 	if(animation[0] == animation[2] && animation[1] == animation[3])
 		speed = 0;
+  */
 	this.tileAnimationSpeed = speed;
 	this.update();
 };

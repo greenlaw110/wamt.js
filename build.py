@@ -13,8 +13,9 @@ for file in glob.glob("src/*.js"):
     source = source + "\n" + ("\n".join(r.readlines()))
     r.close()
 print "Prepared, posting to Google Closure Compiler (js minifier)"
-r = urllib.urlopen("http://closure-compiler.appspot.com/compile",urllib.urlencode({"js_code": source,"compilation_level": "SIMPLE_OPTIMIZATIONS","output_format": "text","output_info": "compiled_code"}))
+# r = urllib.urlopen("http://closure-compiler.appspot.com/compile",urllib.urlencode({"js_code": source,"compilation_level": "SIMPLE_OPTIMIZATIONS","output_format": "text","output_info": "compiled_code"}))
 w = open("wamt-build.min.js","w")
-w.write(r.read())
+# w.write(r.read())
+w.write(source)
 w.close()
 print "Done, wamt-build.min.js"

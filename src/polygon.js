@@ -226,7 +226,7 @@ wamt.Polygon.prototype.stretchX = function(x)
 	var vertices = this.vertices;
 	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = vertices[i];
+		var vertice = vertices[i];
 		vertice[0] += x;
 	}
 	this.computeBounds();
@@ -242,7 +242,7 @@ wamt.Polygon.prototype.stretchY = function(y)
 	var vertices = this.vertices;
 	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = vertices[i];
+		var vertice = vertices[i];
 		vertice[1] += y;
 	}
 	this.computeBounds();
@@ -259,7 +259,7 @@ wamt.Polygon.prototype.stretch = function(x,y)
 	var vertices = this.vertices;
 	for(var i=0;i<vertices.length;i++)
 	{
-		vertice = vertices[i];
+		var vertice = vertices[i];
 		vertice[0] += x;
 		vertice[1] += y;
 	}

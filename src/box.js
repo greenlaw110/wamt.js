@@ -11,7 +11,7 @@
 	@param {Number} y The y-position of the object.
 	@param {Number} angle The angle of the object.
 */
-wamt.Box = function(style,width,height,x,y,angle)
+wamt.Box = function(style,width,height,x,y,angle,transparent)
 {
 	this.events = [];
 	this.collideable = true;
@@ -25,6 +25,7 @@ wamt.Box = function(style,width,height,x,y,angle)
 	this.width = width;
 	this.height = height;
 	this.style = style;
+	this.transparent = transparent;
 	this.shadow = [0,0,0,"rgba(0,0,0,0)"];
 	this.hollow = false;
 	this.visible = true;
@@ -143,7 +144,7 @@ wamt.Box.prototype.render = function(view)
 	var radians = this.radians;
 	var context = view.context;
 	context.strokeStyle = this.style;
-	context.fillStyle = this.style;
+	context.fillStyle = this.transparent ? "" : this.style;
 	context.shadowOffsetX = this.shadow[0];
 	context.shadowOffsetY = this.shadow[1];
 	context.shadowBlur = this.shadow[2];
@@ -273,6 +274,16 @@ wamt.Box.prototype.stretch = function(width,height)
 wamt.Box.prototype.setStyle = function(style)
 {
 	this.style = style;
+	this.update();
+};
+/*
+	@function
+	@description Set the background transparent style of the object.
+	@param {Boolean} transparent The background transparent style.
+*/
+wamt.Box.prototype.setTransparent = function(transparent)
+{
+	this.transparent = transparent;
 	this.update();
 };
 /*
